@@ -1,0 +1,73 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import WorkIndex from "../components/WorkIndex.astro";
+import { url } from "../lib/path.js";
+
+const all = await getCollection("case-studies");
+const byOrder = (a, b) => a.data.order - b.data.order;
+const professional = all.filter((s) => s.data.track === "professional").sort(byOrder);
+const northwestern = all.filter((s) => s.data.track === "northwestern").sort(byOrder);
+---
+<Base>
+  <header class="hero shell">
+    <p class="eyebrow">Senior Product Designer</p>
+    <h1 class="display hero__statement">
+      I make complex risk and decision systems legible to the people who have to act on them.
+    </h1>
+    <p class="hero__sub">
+      Ten years across fintech, automotive, biotech, and sports entertainment. Most recently
+      fraud prevention at Kount, an Equifax company — interfaces used to review more than a
+      million transactions a day.
+    </p>
+  </header>
+
+  <WorkIndex label="Selected work" note="2019 — 2026" studies={professional} startIndex={1} />
+
+  <WorkIndex
+    label="Graduate work — Northwestern MPD²"
+    note="Master of Engineering, Product Design & Development"
+    studies={northwestern}
+    startIndex={professional.length + 1}
+  />
+
+  <section class="about">
+    <div class="shell">
+      <p class="eyebrow">About</p>
+      <p class="display about__body">
+        I started in a biochemistry lab and studied cognitive science before design. That
+        background still shapes how I work: I want to know what the system actually does before
+        I decide what it should look like.
+      </p>
+      <a class="about__link" href={url("/about")}>Read more &rarr;</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: var(--space-3xl) var(--space-section); }
+  .hero__statement {
+    font-size: var(--type-display);
+    margin-block: var(--space-xl) var(--space-xl);
+    max-width: 26ch;
+  }
+  .hero__sub {
+    font-size: var(--type-body-lg);
+    line-height: 1.58;
+    color: var(--ink-secondary);
+    max-width: 60ch;
+  }
+  .about { background: var(--surface-raised); padding-block: var(--space-3xl); }
+  .about__body {
+    font-size: var(--type-h2);
+    line-height: 1.42;
+    margin-block: var(--space-lg) var(--space-lg);
+    max-width: 46ch;
+  }
+  .about__link {
+    font-size: var(--type-body);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .about__link:hover { border-bottom-color: var(--ink-primary); }
+</style>

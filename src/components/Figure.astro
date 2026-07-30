@@ -1,0 +1,35 @@
+---
+/**
+ * The repeating unit inside Process and Solution.
+ * With no `src`, it renders a labelled placeholder — so a case study can be
+ * written and reviewed before the imagery exists.
+ */
+const { src, alt = "", caption, label = "Image", ratio = "16 / 9" } = Astro.props;
+---
+<figure class="figure">
+  {src ? (
+    <img src={src} alt={alt} />
+  ) : (
+    <div class="figure__placeholder" style={`aspect-ratio:${ratio}`} role="img" aria-label={`Placeholder: ${label}`}>
+      <span class="eyebrow">[ {label} ]</span>
+    </div>
+  )}
+  {caption && <figcaption class="figure__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .figure { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .figure__placeholder {
+    display: grid;
+    place-items: center;
+    background: var(--surface-raised);
+    border-radius: var(--radius-sm);
+    width: 100%;
+  }
+  .figure__caption {
+    font-family: var(--font-ui);
+    font-size: var(--type-small);
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+</style>

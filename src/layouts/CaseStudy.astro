@@ -1,0 +1,107 @@
+---
+import Base from "./Base.astro";
+import MetaBar from "../components/MetaBar.astro";
+import Figure from "../components/Figure.astro";
+import MetricGrid from "../components/MetricGrid.astro";
+import NextCase from "../components/NextCase.astro";
+
+const { data, nextStudy, cover } = Astro.props;
+---
+<Base title={data.title} description={data.outcome}>
+  <header class="hero shell">
+    <p class="eyebrow">{data.company} · {data.year}</p>
+    <h1 class="display hero__title">{data.title}</h1>
+    <p class="display hero__outcome">{data.outcome}</p>
+  </header>
+
+  <MetaBar role={data.role} team={data.team} timeframe={data.timeframe} platform={data.platform} />
+
+  <div class="cover shell">
+    <Figure src={cover} label="Cover image — the final screen" caption={data.coverCaption} ratio="16 / 9" />
+  </div>
+
+  <div class="prose shell">
+    <slot />
+  </div>
+
+  <MetricGrid metrics={data.metrics} lead={data.impactLead}>
+    {data.impactNotes.map((n) => <p>{n}</p>)}
+  </MetricGrid>
+
+  {nextStudy && <NextCase title={nextStudy.data.title} href={`/work/${nextStudy.id}`} />}
+</Base>
+
+<style>
+  .hero { padding-block: var(--space-3xl) var(--space-xl); }
+  .hero__title { font-size: var(--type-h1); margin-block: var(--space-lg) var(--space-lg); }
+  .hero__outcome {
+    font-size: var(--type-h3);
+    line-height: 1.45;
+    color: var(--ink-secondary);
+    max-width: 62ch;
+  }
+  .cover { padding-block-end: var(--space-3xl); }
+</style>
+
+<style is:global>
+  /*
+    Editorial two-column body: markdown h2 headings land in the left margin,
+    everything else sits in a measure-constrained reading column. Because grid
+    auto-placement is sparse, the element after an h2 shares its row — so each
+    label aligns with the top of the section it names.
+  */
+  .prose {
+    display: grid;
+    grid-template-columns: var(--layout-label-col) minmax(0, var(--layout-measure));
+    column-gap: var(--space-2xl);
+  }
+  .prose > * { grid-column: 2; }
+  .prose > h2 {
+    grid-column: 1;
+    font-family: var(--font-ui);
+    font-size: var(--type-caption);
+    font-weight: 500;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    margin-block-start: var(--space-3xl);
+  }
+  .prose > h2:first-child { margin-block-start: 0; }
+  .prose > p {
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    line-height: 1.62;
+    color: var(--ink-secondary);
+    margin-block-end: var(--space-lg);
+  }
+  /* The paragraph that shares a row with its label carries the section's thesis. */
+  .prose > h2 + p { color: var(--ink-primary); }
+  .prose > h3 {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    font-weight: 400;
+    margin-block: var(--space-lg) var(--space-sm);
+  }
+  .prose > figure { margin-block-end: var(--space-xl); }
+  .prose > blockquote { margin-block-end: var(--space-xl); }
+  .prose > ul, .prose > ol {
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    line-height: 1.62;
+    color: var(--ink-secondary);
+    margin-block-end: var(--space-lg);
+    padding-inline-start: 1.2em;
+  }
+  .prose > p a, .prose > ul a {
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent-subtle);
+  }
+  .prose > p a:hover { border-bottom-color: var(--accent); }
+
+  @media (max-width: 860px) {
+    .prose { grid-template-columns: minmax(0, 1fr); }
+    .prose > *, .prose > h2 { grid-column: 1; }
+    .prose > h2 { margin-block-start: var(--space-2xl); }
+  }
+</style>

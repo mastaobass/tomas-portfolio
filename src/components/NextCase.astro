@@ -1,0 +1,29 @@
+---
+import { url } from "../lib/path.js";
+const { title, href } = Astro.props;
+---
+<section class="next shell">
+  <hr class="rule" />
+  <a class="next__link" href={url(href)}>
+    <span>
+      <span class="eyebrow">Next</span>
+      <span class="next__title display">{title}</span>
+    </span>
+    <span class="next__arrow display" aria-hidden="true">&rarr;</span>
+  </a>
+</section>
+
+<style>
+  .next { padding-block: var(--space-3xl); }
+  .next__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding-block-start: var(--space-xl);
+  }
+  .next__title { display: block; font-size: var(--type-h2); margin-block-start: var(--space-sm); }
+  .next__arrow { font-size: var(--type-h2); transition: transform 160ms ease; }
+  .next__link:hover .next__arrow { transform: translateX(6px); }
+  .next__link:hover .next__title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+</style>

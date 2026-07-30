@@ -1,0 +1,47 @@
+---
+import { url } from "../lib/path.js";
+const { index, title, outcome, company, role, year, href } = Astro.props;
+---
+<li class="row">
+  <a class="row__link" href={url(href)}>
+    <span class="row__index">{String(index).padStart(2, "0")}</span>
+    <span class="row__body">
+      <span class="row__title display">{title}</span>
+      <span class="row__outcome">{outcome}</span>
+    </span>
+    <span class="row__meta">
+      <span>{company}</span>
+      <span>{role} · {year}</span>
+    </span>
+  </a>
+</li>
+
+<style>
+  .row { border-bottom: var(--rule); list-style: none; }
+  .row__link {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) 200px;
+    gap: var(--space-xl);
+    align-items: start;
+    padding-block: var(--space-xl);
+    transition: opacity 150ms ease;
+  }
+  .row__index { font-size: var(--type-caption); color: var(--ink-muted); padding-top: 0.7em; }
+  .row__body { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .row__title { font-size: var(--type-h2); font-weight: 400; }
+  .row__outcome { color: var(--ink-secondary); font-size: var(--type-body-lg); line-height: 1.55; }
+  .row__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: right;
+    font-size: var(--type-caption);
+    color: var(--ink-muted);
+    padding-top: 0.7em;
+  }
+  .row__link:hover .row__title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+  @media (max-width: 860px) {
+    .row__link { grid-template-columns: 32px minmax(0, 1fr); gap: var(--space-md); }
+    .row__meta { grid-column: 2; text-align: left; padding-top: var(--space-xs); }
+  }
+</style>

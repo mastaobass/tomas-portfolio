@@ -1,0 +1,25 @@
+---
+const { attribution } = Astro.props;
+---
+<blockquote class="pull">
+  <div class="pull__text"><slot /></div>
+  {attribution && <cite class="pull__cite">{attribution}</cite>}
+</blockquote>
+
+<style>
+  .pull { margin: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
+  .pull__text :global(p) { margin: 0; }
+  .pull__text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--type-h3);
+    line-height: 1.45;
+    color: var(--ink-primary);
+  }
+  .pull__cite {
+    font-family: var(--font-ui);
+    font-style: normal;
+    font-size: var(--type-caption);
+    color: var(--ink-muted);
+  }
+</style>

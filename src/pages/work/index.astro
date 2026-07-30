@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import WorkIndex from "../../components/WorkIndex.astro";
+
+const studies = (await getCollection("case-studies"))
+  .filter((s) => s.data.track === "professional")
+  .sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="Work" description="Selected product design work in fraud prevention, design systems, and data-dense tools.">
+  <header class="hero shell">
+    <p class="eyebrow">Selected work</p>
+    <h1 class="display hero__title">Risk, decision, and data-dense systems.</h1>
+    <p class="hero__sub">
+      Each study leads with the outcome. Process is there if you want it.
+    </p>
+  </header>
+  <WorkIndex label="Professional" note="2019 — 2026" studies={studies} startIndex={1} />
+</Base>
+
+<style>
+  .hero { padding-block: var(--space-3xl) var(--space-2xl); }
+  .hero__title { font-size: var(--type-h1); margin-block: var(--space-lg) var(--space-lg); max-width: 24ch; }
+  .hero__sub { font-size: var(--type-body-lg); color: var(--ink-secondary); max-width: 52ch; }
+</style>

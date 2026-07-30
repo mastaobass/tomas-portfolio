@@ -1,0 +1,55 @@
+---
+const email = "tomas.stonehouse@gmail.com";
+const links = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/tomasstonehouse" },
+  { label: "Resume", href: "#" },
+  { label: "Email", href: `mailto:${email}` },
+];
+---
+<footer class="footer">
+  <div class="shell">
+    <p class="eyebrow">Contact</p>
+    <p class="display footer__line">Currently open to senior and staff product design roles.</p>
+    <a class="footer__email" href={`mailto:${email}`}>{email}</a>
+
+    <hr class="rule footer__rule" />
+
+    <div class="footer__bottom">
+      <small>© {new Date().getFullYear()} Tomás Stonehouse</small>
+      <ul class="footer__links">
+        {links.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { padding-block: var(--space-3xl) var(--space-xl); }
+  .footer__line {
+    font-size: var(--type-h1);
+    margin-block: var(--space-lg) var(--space-md);
+    max-width: 22ch;
+  }
+  .footer__email {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--type-h3);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .footer__email:hover { border-bottom-color: var(--ink-primary); }
+  .footer__rule { margin-block: var(--space-xl); }
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--type-caption);
+    color: var(--ink-muted);
+  }
+  .footer__links { display: flex; gap: var(--space-lg); list-style: none; margin: 0; padding: 0; }
+  .footer__links a { color: var(--ink-secondary); border-bottom: 1px solid transparent; }
+  .footer__links a:hover { border-bottom-color: var(--ink-primary); }
+</style>

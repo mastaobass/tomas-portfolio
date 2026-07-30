@@ -1,0 +1,44 @@
+---
+/** The one section that carries a background shift — outcomes are the payload. */
+const { metrics = [], lead, children } = Astro.props;
+---
+<section class="impact">
+  <div class="shell">
+    <p class="eyebrow">Impact</p>
+    {lead && <p class="display impact__lead">{lead}</p>}
+    {metrics.length > 0 && (
+      <dl class="impact__grid">
+        {metrics.map((m) => (
+          <div class="impact__cell">
+            <dt class="impact__value display">{m.value}</dt>
+            <dd class="impact__label">{m.label}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+    <div class="impact__body serif-body"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .impact {
+    background: var(--surface-raised);
+    padding-block: var(--space-3xl);
+    margin-block-start: var(--space-xl);
+  }
+  .impact__lead {
+    font-size: var(--type-h2);
+    margin-block: var(--space-lg) var(--space-2xl);
+    max-width: 30ch;
+  }
+  .impact__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-xl);
+    margin: 0 0 var(--space-2xl);
+  }
+  .impact__cell { display: flex; flex-direction: column; gap: var(--space-xs); }
+  .impact__value { font-size: var(--type-h1); margin: 0; }
+  .impact__label { margin: 0; font-family: var(--font-ui); font-size: var(--type-small); color: var(--ink-secondary); line-height: 1.45; }
+  .impact__body { max-width: 68ch; display: flex; flex-direction: column; gap: var(--space-lg); }
+</style>

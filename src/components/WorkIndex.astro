@@ -1,0 +1,38 @@
+---
+import WorkRow from "./WorkRow.astro";
+const { label, note, studies, startIndex = 1 } = Astro.props;
+---
+<section class="index shell">
+  <header class="index__head">
+    <h2 class="eyebrow">{label}</h2>
+    {note && <p class="index__note">{note}</p>}
+  </header>
+  <hr class="rule" />
+  <ul class="index__list">
+    {studies.map((s, i) => (
+      <WorkRow
+        index={startIndex + i}
+        title={s.data.title}
+        outcome={s.data.outcome}
+        company={s.data.company}
+        role={s.data.role}
+        year={s.data.year}
+        href={`/work/${s.id}`}
+      />
+    ))}
+  </ul>
+</section>
+
+<style>
+  .index { padding-block-end: var(--space-3xl); }
+  .index__head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: baseline;
+    justify-content: space-between;
+    padding-block-end: var(--space-lg);
+  }
+  .index__note { font-size: var(--type-caption); color: var(--ink-muted); margin: 0; }
+  .index__list { margin: 0; padding: 0; list-style: none; }
+</style>

@@ -1,0 +1,35 @@
+---
+/** Role / Team / Timeframe / Platform. Fields come straight from frontmatter. */
+const { role, team, timeframe, platform } = Astro.props;
+const items = [
+  ["Role", role],
+  ["Team", team],
+  ["Timeframe", timeframe],
+  ["Platform", platform],
+].filter(([, v]) => Boolean(v));
+---
+<section class="meta shell" aria-label="Project details">
+  <hr class="rule" />
+  <dl class="meta__grid">
+    {items.map(([k, v]) => (
+      <div class="meta__cell">
+        <dt class="eyebrow">{k}</dt>
+        <dd class="meta__value">{v}</dd>
+      </div>
+    ))}
+  </dl>
+  <hr class="rule" />
+</section>
+
+<style>
+  .meta { padding-block-end: var(--space-3xl); }
+  .meta__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: var(--space-lg) var(--space-xl);
+    margin: 0;
+    padding-block: var(--space-lg);
+  }
+  .meta__cell { display: flex; flex-direction: column; gap: var(--space-xs); }
+  .meta__value { margin: 0; font-size: var(--type-body); line-height: 1.5; }
+</style>

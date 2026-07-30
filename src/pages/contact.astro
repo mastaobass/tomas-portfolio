@@ -1,0 +1,55 @@
+---
+import Base from "../layouts/Base.astro";
+const email = "tomas.stonehouse@gmail.com";
+---
+<Base title="Contact" description="Get in touch about senior and staff product design roles.">
+  <header class="hero shell">
+    <p class="eyebrow">Contact</p>
+    <h1 class="display hero__title">Currently open to senior and staff product design roles.</h1>
+    <p class="hero__sub">
+      Best reached by email. I read everything and reply to anything specific.
+    </p>
+    <a class="hero__email" href={`mailto:${email}`}>{email}</a>
+  </header>
+
+  <div class="detail shell">
+    <hr class="rule" />
+    <dl class="detail__grid">
+      <div>
+        <dt class="eyebrow">Based in</dt>
+        <dd>Seattle, Washington</dd>
+      </div>
+      <div>
+        <dt class="eyebrow">Open to</dt>
+        <dd>Remote · Seattle hybrid</dd>
+      </div>
+      <div>
+        <dt class="eyebrow">Elsewhere</dt>
+        <dd><a href="https://www.linkedin.com/in/tomasstonehouse">LinkedIn</a></dd>
+      </div>
+    </dl>
+  </div>
+</Base>
+
+<style>
+  .hero { padding-block: var(--space-3xl) var(--space-2xl); }
+  .hero__title { font-size: var(--type-h1); margin-block: var(--space-lg) var(--space-lg); max-width: 26ch; }
+  .hero__sub { font-size: var(--type-body-lg); color: var(--ink-secondary); max-width: 52ch; margin-block-end: var(--space-lg); }
+  .hero__email {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--type-h3);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .hero__email:hover { border-bottom-color: var(--ink-primary); }
+  .detail { padding-block-end: var(--space-3xl); }
+  .detail__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: var(--space-lg) var(--space-xl);
+    padding-block: var(--space-lg);
+    margin: 0;
+  }
+  .detail__grid dd { margin: 0; }
+  .detail__grid a { border-bottom: 1px solid var(--border-subtle); }
+</style>
