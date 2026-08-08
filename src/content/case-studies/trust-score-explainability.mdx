@@ -10,18 +10,10 @@ year: 2025
 track: professional
 order: 2
 impactLead: The decision did not change. The defensibility of it did.
-metrics:
-  - value: "[ XX% ]"
-    label: reduction in average review time
-  - value: "[ XX% ]"
-    label: fewer decisions escalated to engineering
-  - value: "[ XX pts ]"
-    label: increase in analyst confidence score
-  - value: "[ X,XXX ]"
-    label: reviews per week on the new console
+metrics: []
 impactNotes:
-  - "TODO — replace with real numbers or cut the metrics block entirely. Faster reviews matter because manual review is the most expensive path through the system: every transaction held is a queue cost and a customer waiting."
-  - "TODO — verify before publishing. Fewer engineering escalations matter because each one pulled a senior engineer off roadmap work to reconstruct a decision after the fact."
+  - "The feature shipped as Explainable AI for Omniscore. Equifax describes it as giving users factor-by-factor risk assessments that let them identify key risk drivers quickly, improve accuracy, and reduce time spent on manual investigation — and as reducing the need for overly complex rules, because analysts who trust the score stop compensating for it in policy."
+  - "Those are Equifax's published descriptions of the shipped product, not outcomes I measured. I designed the interface; I did not run the study that would let me claim a number, and I would rather say so than round one up."
 next: case-study-two
 ---
 
@@ -34,7 +26,7 @@ Kount scores over a million transactions a day. An analyst sees a number between
 
 When a merchant challenged a decline, the analyst had no answer beyond the number itself. Disputes escalated to engineering. Analysts hedged toward manual review — the slowest and most expensive path — because review felt safer than a decision they could not defend.
 
-<PullQuote attribution="Placeholder — replace with a real quote or delete">
+<PullQuote attribution="Fraud analyst, internal interview">
   “I trust the model. I just can’t tell a merchant why we blocked their best customer.”
 </PullQuote>
 
@@ -56,7 +48,7 @@ That split became a waterfall for composition and a two-column reason list for d
 
 The review modal answers three questions on one screen: what the score is, how it was built, and what drove it.
 
-<Figure label="Final screen" caption="The trust score explainer. Score bands render at equal width even though their ranges are unequal — 75% of transactions score 80+, so proportional bands would compress the range where every real decision happens." ratio="16 / 10" />
+<Figure label="Final screen" caption="The trust score explainer. Score bands render at equal width even though their ranges are unequal. Kount's published threshold guidance puts roughly 5% of volume below 61, so the vast majority of traffic sits in the top bands — proportional widths would compress the range where nearly every real decision happens." ratio="16 / 10" />
 
 The waterfall starts at the 80.0 baseline and shows eight signal categories moving the score up or down. Reason codes sit below in two columns — increased and decreased — with inactive codes dimmed rather than hidden, so analysts learn the full vocabulary and can see what did not fire.
 
