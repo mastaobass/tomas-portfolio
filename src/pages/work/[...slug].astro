@@ -1,9 +1,12 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import CaseStudy from "../../layouts/CaseStudy.astro";
+import { getStudies } from "../../lib/studies.js";
 
 export async function getStaticPaths() {
-  const studies = await getCollection("case-studies");
+  // Drafts get no route in a production build, so an unfinished study cannot be
+  // reached by direct URL even though it has no link pointing at it.
+  const studies = await getStudies();
   return studies.map((entry) => ({
     params: { slug: entry.id },
     props: { entry, all: studies },

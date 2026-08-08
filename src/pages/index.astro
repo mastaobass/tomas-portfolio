@@ -1,13 +1,11 @@
 ---
-import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import WorkIndex from "../components/WorkIndex.astro";
 import { url } from "../lib/path.js";
+import { getStudies } from "../lib/studies.js";
 
-const all = await getCollection("case-studies");
-const byOrder = (a, b) => a.data.order - b.data.order;
-const professional = all.filter((s) => s.data.track === "professional").sort(byOrder);
-const northwestern = all.filter((s) => s.data.track === "northwestern").sort(byOrder);
+const professional = await getStudies("professional");
+const northwestern = await getStudies("northwestern");
 ---
 <Base>
   <header class="hero shell">

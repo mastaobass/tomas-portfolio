@@ -1,0 +1,109 @@
+---
+title: Authorized payment protection
+outcome: Three parties with different authority acted on the same fraud decision. We built a policy model that let a payment network, its member banks, and individual reviewers each act without overriding each other by accident.
+company: Kount, an Equifax company
+role: Lead product designer
+team: 1 product director · 1 product owner · 1 engineering pod · 4 data scientists
+timeframe: "[ Qx–Qx 20XX ]"
+platform: Web · bank review console
+year: 2026
+track: professional
+order: 1
+draft: true
+impactLead: Shipped the first version and set the direction for a fraud category that card fraud tooling cannot address.
+metrics:
+  - value: "3"
+    label: authority tiers in the policy model
+  - value: "[ X ]"
+    label: "[ early adoption measure — fill or cut ]"
+impactNotes:
+  - "I shipped the first version and set direction, then was part of a reduction before outcomes matured. The evidence in this study is the decisions, not the results — stated plainly because the alternative is a number I cannot source."
+  - "TODO — decide whether the metrics block earns its place here at all. Two entries, one of them structural, may be weaker than no block and a stronger impact line."
+next: trust-score-explainability
+---
+
+import Figure from "../../components/Figure.astro";
+import PullQuote from "../../components/PullQuote.astro";
+
+## Context
+
+Colombia was about to make its payments irreversible, and the fraud tooling for what that changes did not exist yet.
+
+Bre-B, the instant-payment system from Banco de la República, was coming. Redeban — the country's largest payment processor, owned by its major banks and licensed as a low-value payment system administrator — would operate a federated node on it. Instant settlement is very good for people and very good for fraudsters, for the same reason: once the money moves it is gone, and there is no chargeback window in which to review the decision.
+
+Equifax had a fraud platform. It had been built for merchants reviewing their own card-not-present orders, which is a different problem from the one Colombia was about to have.
+
+## The inversion
+
+Card fraud asks whether this cardholder is who they claim to be. Authorized push payment fraud asks whether this real, correctly authenticated customer is being deceived right now.
+
+That inversion breaks most of the assumptions underneath a fraud product. The victim authenticates successfully, because they are the actual account holder. They authorize deliberately, because they have been manipulated into believing they should. Every signal that normally indicates legitimacy is present and genuine. The fraud lives in the intent behind an otherwise clean transaction.
+
+<PullQuote attribution="[ Placeholder — replace with a real stakeholder quote or delete ]">
+  The customer is not lying to us. Someone else is lying to them.
+</PullQuote>
+
+Which produces the design problem at the center of this work: you are intervening against your own customer's stated wishes, in real time, and you have to do it without treating them as a suspect. Get the tone wrong and you have shipped a product that insults people for trying to move their own money.
+
+## Three tiers of authority over one decision
+
+The hard part was never detection. It was that three parties, with three different levels of authority, all had a legitimate claim on the same decision.
+
+The network set base policies and risk tolerances — a floor for participating institutions on its node. Individual banks layered their own policies on top of that floor. Bank reviewers worked the individual payments that got flagged.
+
+None of these people work for each other. A bank cannot be told its risk appetite by a product a competitor also uses. A reviewer cannot be left guessing whether the rule in front of them is theirs to overturn. And the network cannot let a member quietly undercut a floor that exists to protect everyone on the rail.
+
+<Figure label="Policy inheritance" caption="Distinguishing network-set floors from bank-authored policy in a single list. [ Replace with recreated artifact. ]" />
+
+So the interface had to answer three questions a single-tenant fraud tool never has to ask. Which of these rules did we set, and which did we inherit? What happens when a bank wants to be more permissive than the floor? And when a reviewer opens a flagged payment — whose rule caught this, and do I have standing to overturn it?
+
+That last question is the trust-score problem one layer up. Not *why did the model score this 62*, but *whose judgment is this, and what authority do I have against it*. Inherited policy is invisible by default, and invisible authority is how reviewers end up either rubber-stamping decisions they do not understand or overriding ones they should not.
+
+## What we kept and what we cut
+
+The product shipped as a stripped-down fork of Payments Fraud, and the interesting work was in the stripping.
+
+We carried the platform core — organization and user management — because multi-tenant structure, roles, and permissions are the least market-specific thing in an enterprise product and rebuilding them buys nothing. We took the rules engine, but only the Payments Fraud slice. And we took the case management system that Payments Fraud used, as the surface where reviewers work.
+
+{/* ────────────────────────────────────────────────────────────────
+    FILL THIS IN. This is the section that makes this a staff-level
+    study rather than a competent one.
+
+    What came out, and why. Two or three specific cuts with the
+    reasoning behind each. The strongest version names something you
+    removed that was genuinely useful in the source product but wrong
+    here — that is the judgment call an interviewer is hunting for.
+
+    Also worth one line: did the org hierarchy need a structural
+    change? A network with member banks under it is a deeper tree
+    than merchant-under-account.
+   ──────────────────────────────────────────────────────────────── */}
+
+I had designed the original rules engine. Deciding which half of my own prior work survived into a different market was the most useful thing I did on this project.
+
+## Working with data science as a co-owner
+
+The models were not mine. The interface between what a model produced and what a human could defensibly act on was.
+
+A four-person data science group owned detection. Models trained first on the Colombian network's data, with planned expansion to ueno bank in Paraguay, then the UK, Canada, and the US.
+
+{/* FILL: one specific negotiation with data science — what the UI
+    exposed and what it did not. A disagreement and its resolution is
+    worth more here than a description of process. Most designers
+    cannot write this section, which is exactly why it is valuable. */}
+
+The roadmap also called for adding data streams, device data among them, so that a reviewer confirming or denying a flag fed labeled outcomes back into training. Designing the review surface as a *training input* rather than only a decision point changes what you ask a reviewer to record.
+
+## How design got upstream
+
+I speak Spanish, so I sat in stakeholder calls directly rather than reading a summary of them afterward.
+
+Small thing, large effect. Understanding the conversation at the source put design in the room while scope was still being set, instead of receiving requirements after the shape of the product had already been decided. Most designers argue they belong upstream. This was a concrete mechanism for getting there.
+
+## What I would have measured
+
+This shipped and I did not get to see the numbers.
+
+I was part of a reduction before results matured, and the only outcome available was early adoption. Rather than reach for something I cannot source, here is what I would have instrumented: reviewer override rate on network-set rules versus bank-set rules, because a high override rate on inherited policy would have meant the authority model was illegible, which was the entire risk. Then false-positive rate on flagged payments, and time-to-decision under the real-time constraint.
+
+What I can point to instead is why the category matters. Colombia's banking association has publicly identified instant payments as the sector's leading fraud risk, citing Brazil, where incidents grew more than 50% after Pix launched. In the UK, the Payment Systems Regulator's mandatory reimbursement framework moved APP fraud out of customer service and onto the balance sheet — which is what turns a detection problem into a product one.

@@ -1,0 +1,111 @@
+/* Product UI layer — additive to tokens.css.
+ *
+ * Everything here is what product screens need and the reading surface doesn't:
+ * score semantics, tabular numerals, chart states. It consumes the existing
+ * tokens and defines nothing that tokens.css already owns.
+ *
+ * Import AFTER tokens.css. Used by the trust-score explainability recreation.
+ */
+
+:root {
+  /* ---- Score factor semantics ----
+   * Derived to sit in the same warm, desaturated family as --accent (#2f5d57).
+   * A pure red/green pair would read as pasted in from a stock dashboard, which
+   * defeats the point of building the recreation in this system.
+   * Contrast measured against --surface-page (#fbfaf7). */
+  --signal-risk: #8a3a2d;          /* 7.3:1 — factors that SUBTRACT from score */
+  --signal-risk-subtle: #f5e7e4;
+  --signal-safety: #3a6440;        /* 6.4:1 — factors that ADD to score */
+  --signal-safety-subtle: #e6eee7;
+
+  /* ---- Score bands ---- */
+  --band-risky: #8a3a2d;           /*  0–60  */
+  --band-mixed: #856a2c;           /* 60–80  — 4.9:1 */
+  --band-safe: #3a6440;            /* 80–100 */
+
+  /* ---- Chart ---- */
+  --chart-grid: var(--border-subtle);
+  --chart-inactive: 0.45;          /* opacity for deselected bars */
+
+  /* ---- Data density ----
+   * Product tables run tighter than prose. These sit between the existing
+   * --space-xs and --space-sm rather than introducing a new scale. */
+  --row-pad-y: 0.625rem;
+  --row-pad-y-compact: 0.4375rem;
+}
+
+/* Every number in a column gets tabular figures, or rows jitter as values
+ * change and a data table starts looking like a rendering bug. */
+.tnum,
+.score,
+.factor__delta,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Score display — Inter, not the display serif. Numbers are UI, not prose. */
+.score {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/* Factor rows.
+ * The sign glyph is a separate element and comes FIRST in the DOM, before
+ * color is perceived. A red/green list of risk factors is close to unreadable
+ * for the ~1 in 12 men with a red-green deficiency if hue is the only encoding,
+ * and the users here are fraud analysts reading these all day. */
+.factor {
+  display: grid;
+  grid-template-columns: 1.125rem 1fr auto;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-block: var(--row-pad-y);
+  border-bottom: var(--rule);
+  font-family: var(--font-ui);
+  font-size: var(--type-small);
+}
+.factor:last-child { border-bottom: 0; }
+.factor__sign { font-weight: 600; text-align: center; }
+.factor__delta { font-weight: 500; }
+
+.factor--risk   .factor__sign,
+.factor--risk   .factor__delta { color: var(--signal-risk); }
+.factor--safety .factor__sign,
+.factor--safety .factor__delta { color: var(--signal-safety); }
+
+/* Band meter — equal-width segments, deliberately.
+ * Kount documents that most transactions score in the 80s and 90s. Sizing the
+ * segments to their numeric ranges would give Safe 20% of the meter while it
+ * holds the large majority of real traffic, compressing the region where
+ * essentially all discrimination happens. Space is allocated by density. */
+.band-meter {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.band-meter__seg { height: 10px; border-radius: var(--radius-sm); }
+.band-meter__seg[data-band="risky"] { background: var(--band-risky); }
+.band-meter__seg[data-band="mixed"] { background: var(--band-mixed); }
+.band-meter__seg[data-band="safe"]  { background: var(--band-safe); }
+.band-meter__seg[aria-current="false"] { opacity: 0.22; }
+
+/* Waterfall bars. Selected state changes fill weight, not just hue, so the
+ * control remains readable without color. Keyboard operable by default
+ * because these are real buttons. */
+.wf__bar {
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: background 120ms ease, opacity 120ms ease;
+}
+.wf__btn[aria-pressed="false"] .wf__bar { opacity: var(--chart-inactive); }
+.wf__btn[data-type="risk"]   .wf__bar { background: var(--signal-risk-subtle);   border-color: var(--signal-risk); }
+.wf__btn[data-type="safety"] .wf__bar { background: var(--signal-safety-subtle); border-color: var(--signal-safety); }
+.wf__btn[aria-pressed="true"][data-type="risk"]   .wf__bar { background: var(--signal-risk); }
+.wf__btn[aria-pressed="true"][data-type="safety"] .wf__bar { background: var(--signal-safety); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wf__bar { transition: none; }
+}

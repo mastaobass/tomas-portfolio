@@ -1,11 +1,9 @@
 ---
-import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import WorkIndex from "../../components/WorkIndex.astro";
+import { getStudies } from "../../lib/studies.js";
 
-const studies = (await getCollection("case-studies"))
-  .filter((s) => s.data.track === "professional")
-  .sort((a, b) => a.data.order - b.data.order);
+const studies = await getStudies("professional");
 ---
 <Base title="Work" description="Selected product design work in fraud prevention, design systems, and data-dense tools.">
   <header class="hero shell">
