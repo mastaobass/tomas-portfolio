@@ -1,8 +1,10 @@
 ---
+import { url } from "../lib/path.js";
+
 const email = "tomas.stonehouse@gmail.com";
 const links = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/tomasstonehouse" },
-  { label: "Resume", href: "#" },
+  { label: "Resume", href: url("/tomas-stonehouse-resume.pdf") },
   { label: "Email", href: `mailto:${email}` },
 ];
 ---
