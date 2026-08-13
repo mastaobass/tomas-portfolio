@@ -19,6 +19,7 @@ next: case-study-two
 
 import Figure from "../../components/Figure.astro";
 import PullQuote from "../../components/PullQuote.astro";
+import { url } from "../../lib/path.js";
 
 ## Context
 
@@ -48,7 +49,13 @@ That split became a waterfall for composition and a two-column reason list for d
 
 The review modal answers three questions on one screen: what the score is, how it was built, and what drove it.
 
-<Figure label="Final screen" caption="The trust score explainer. Score bands render at equal width even though their ranges are unequal. Kount's published threshold guidance puts roughly 5% of volume below 61, so the vast majority of traffic sits in the top bands — proportional widths would compress the range where nearly every real decision happens." ratio="16 / 10" />
+<Figure
+  src={url("/trust-score-hero.png")}
+  alt="Transaction Trust Score modal showing score 85.6, waterfall chart of contributing factors, and two-column reason codes"
+  label="Final screen"
+  caption="The trust score explainer. Score bands render at equal width even though their ranges are unequal. Kount's published threshold guidance puts roughly 5% of volume below 61, so the vast majority of traffic sits in the top bands — proportional widths would compress the range where nearly every real decision happens."
+  ratio="16 / 10"
+/>
 
 The waterfall starts at the 80.0 baseline and shows eight signal categories moving the score up or down. Reason codes sit below in two columns — increased and decreased — with inactive codes dimmed rather than hidden, so analysts learn the full vocabulary and can see what did not fire.
 
