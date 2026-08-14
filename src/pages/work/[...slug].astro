@@ -16,7 +16,14 @@ export async function getStaticPaths() {
 const { entry, all } = Astro.props;
 const { Content } = await render(entry);
 const nextStudy = entry.data.next ? all.find((s) => s.id === entry.data.next) : undefined;
+
+// Temporary cover map until we add a proper cover field to the content schema.
+// Only the trust-score study has a real hero image today.
+const coverMap = {
+  "trust-score-explainability": "/tomas-portfolio/trust-score-hero.png",
+};
+const cover = coverMap[entry.id] ?? undefined;
 ---
-<CaseStudy data={entry.data} nextStudy={nextStudy}>
+<CaseStudy data={entry.data} nextStudy={nextStudy} cover={cover}>
   <Content />
 </CaseStudy>
