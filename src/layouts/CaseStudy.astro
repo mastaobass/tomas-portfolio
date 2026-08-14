@@ -16,9 +16,11 @@ const { data, nextStudy, cover } = Astro.props;
 
   <MetaBar role={data.role} team={data.team} timeframe={data.timeframe} platform={data.platform} />
 
-  <div class="cover shell">
-    <Figure src={cover} label="Cover image — the final screen" caption={data.coverCaption} ratio="16 / 9" />
-  </div>
+  {cover && (
+    <div class="cover shell">
+      <Figure src={cover} label="Cover image — the final screen" caption={data.coverCaption} ratio="16 / 9" />
+    </div>
+  )}
 
   <div class="prose shell">
     <slot />
