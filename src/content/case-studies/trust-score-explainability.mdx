@@ -34,7 +34,7 @@ Two constraints shaped everything. The score comes from a proprietary model, so 
 
 ## Process
 
-The pattern in review queues was consistent: analysts were not looking for more data, they were looking for a story that reconciled.
+The model is proprietary, so weights were never going to be visible. That constraint was understood from the start. Data Science controlled which reason codes could surface and how many. The design problem was therefore not how much we could reveal, but how to make a limited, pre-scripted set of reasons feel sufficient for a decision an analyst has to defend.
 
 <Figure
   src="/tomas-portfolio/research-trust-image.png"
@@ -43,11 +43,17 @@ The pattern in review queues was consistent: analysts were not looking for more 
   caption="Queue observation notes. Analysts re-derived the same four questions on every transaction."
 />
 
-An early direction showed every contributing signal ranked by weight. It read as a wall. A second showed only the top three — too thin to defend a decision. The version that worked separated the two questions analysts were actually asking: how did we get to this number, and what specifically drove it?
+Two questions kept recurring in queue observation: how was this score built, and what specifically drove it. The version that worked separated those questions. Composition became a waterfall. Drivers became a two-column list of active and inactive reason codes.
 
-<Figure label="Exploration" caption="Directions tested with analysts. The waterfall emerged from the second round." />
+The hardest detail was the baseline. Mathematically the score often started somewhere in the 70s and the starting point shifted with every transaction. A waterfall only reads as an argument if it begins from a stable number. We pinned the visual baseline at 80.0 so the movements up and down stayed consistent and legible, even though the underlying math was more fluid. That single decision made the rest of the interface coherent.
 
-That split became a waterfall for composition and a two-column reason list for detail. The critical constraint: the waterfall movements and the active reason codes had to reconcile exactly. Explainability that does not add up erodes trust faster than no explanation at all.
+<Figure
+  src="/tomas-portfolio/trust-score-baseline.jpg"
+  alt="Diagram comparing the shifting mathematical starting point of the score with the fixed visual baseline of 80.0 used in the waterfall"
+  label="Exploration"
+  caption="The mathematical starting point shifted per transaction. Pinning the visual baseline at 80.0 made the waterfall readable."
+  ratio="16 / 9"
+/>
 
 ## Solution
 
