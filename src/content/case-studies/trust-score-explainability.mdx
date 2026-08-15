@@ -34,7 +34,7 @@ Two constraints shaped everything. The score comes from a proprietary model, so 
 
 ## Process
 
-The model is proprietary, so weights were never going to be visible. That constraint was understood from the start. Data Science controlled which reason codes could surface and how many. The design problem was therefore not how much we could reveal, but how to make a limited, pre-scripted set of reasons feel sufficient for a decision an analyst has to defend.
+The design problem was not how much we could reveal. It was how to make a limited, pre-scripted set of reasons feel sufficient for a decision an analyst has to defend.
 
 <Figure
   src="/tomas-portfolio/research-trust-image.png"
@@ -42,6 +42,8 @@ The model is proprietary, so weights were never going to be visible. That constr
   label="Research artifact"
   caption="Queue observation notes. Analysts re-derived the same four questions on every transaction."
 />
+
+The model is proprietary, so weights were never going to be visible. That constraint was understood from the start. Data Science controlled which reason codes could surface and how many.
 
 Two questions kept recurring in queue observation: how was this score built, and what specifically drove it. The version that worked separated those questions. Composition became a waterfall. Drivers became a two-column list of active and inactive reason codes.
 
