@@ -1,14 +1,35 @@
 ---
 /**
  * The repeating unit inside Process and Solution.
- * With no `src`, it renders a labelled placeholder — so a case study can be
- * written and reviewed before the imagery exists.
+ * Pass an imported asset (ImageMetadata) for optimized output via Astro Image.
+ * Pass a string path only for temporary public/ URLs during migration.
+ * With no `src`, renders a labelled placeholder so studies can be written first.
  */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  src?: ImageMetadata | string;
+  alt?: string;
+  caption?: string;
+  label?: string;
+  ratio?: string;
+}
+
 const { src, alt = "", caption, label = "Image", ratio = "16 / 9" } = Astro.props;
+const isAsset = typeof src === "object" && src !== null && "width" in src;
 ---
 <figure class="figure">
-  {src ? (
-    <img src={src} alt={alt} />
+  {isAsset ? (
+    <Image
+      src={src}
+      alt={alt}
+      widths={[720, 1080, 1440]}
+      sizes="(max-width: 860px) 100vw, 744px"
+      class="figure__img"
+    />
+  ) : src ? (
+    <img src={src} alt={alt} loading="lazy" decoding="async" class="figure__img" />
   ) : (
     <div class="figure__placeholder" style={`aspect-ratio:${ratio}`} role="img" aria-label={`Placeholder: ${label}`}>
       <span class="eyebrow">[ {label} ]</span>
@@ -19,6 +40,12 @@ const { src, alt = "", caption, label = "Image", ratio = "16 / 9" } = Astro.prop
 
 <style>
   .figure { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .figure__img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    display: block;
+  }
   .figure__placeholder {
     display: grid;
     place-items: center;
