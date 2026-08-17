@@ -19,6 +19,9 @@ next: case-study-two
 
 import Figure from "../../components/Figure.astro";
 import PullQuote from "../../components/PullQuote.astro";
+import researchImage from "../../assets/research-trust-image.png";
+import baselineImage from "../../assets/trust-score-baseline.jpg";
+import heroImage from "../../assets/trust-score-hero.png";
 
 ## Context
 
@@ -37,7 +40,7 @@ Two constraints shaped everything. The score comes from a proprietary model, so 
 The design problem was not how much we could reveal. It was how to make a limited, pre-scripted set of reasons feel sufficient for a decision an analyst has to defend.
 
 <Figure
-  src="/tomas-portfolio/research-trust-image.png"
+  src={researchImage}
   alt="Research synthesis card showing the four questions analysts repeatedly asked about the trust score"
   label="Research artifact"
   caption="Queue observation notes. Analysts re-derived the same four questions on every transaction."
@@ -50,7 +53,7 @@ Two questions kept recurring in queue observation: how was this score built, and
 The hardest detail was the baseline. Mathematically the score often started somewhere in the 70s and the starting point shifted with every transaction. A waterfall only reads as an argument if it begins from a stable number. We pinned the visual baseline at 80.0 so the movements up and down stayed consistent and legible, even though the underlying math was more fluid. That single decision made the rest of the interface coherent.
 
 <Figure
-  src="/tomas-portfolio/trust-score-baseline.jpg"
+  src={baselineImage}
   alt="Diagram comparing the shifting mathematical starting point of the score with the fixed visual baseline of 80.0 used in the waterfall"
   label="Exploration"
   caption="The mathematical starting point shifted per transaction. Pinning the visual baseline at 80.0 made the waterfall readable."
@@ -62,7 +65,7 @@ The hardest detail was the baseline. Mathematically the score often started some
 The review modal answers three questions on one screen: what the score is, how it was built, and what drove it.
 
 <Figure
-  src="/tomas-portfolio/trust-score-hero.png"
+  src={heroImage}
   alt="Transaction Trust Score modal showing score 85.6, waterfall chart of contributing factors, and two-column reason codes"
   label="Final screen"
   caption="The trust score explainer. Score bands render at equal width even though their ranges are unequal. Kount's published threshold guidance puts roughly 5% of volume below 61, so the vast majority of traffic sits in the top bands — proportional widths would compress the range where nearly every real decision happens."
