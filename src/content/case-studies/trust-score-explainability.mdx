@@ -22,6 +22,7 @@ import PullQuote from "../../components/PullQuote.astro";
 import researchImage from "../../assets/research-trust-image.png";
 import baselineImage from "../../assets/trust-score-baseline.jpg";
 import heroImage from "../../assets/trust-score-hero.png";
+import reasonCodesImage from "../../assets/reason-codes.png";
 
 ## Context
 
@@ -74,6 +75,12 @@ The review modal answers three questions on one screen: what the score is, how i
 
 The waterfall starts at the 80.0 baseline and shows eight signal categories moving the score up or down. Reason codes sit below in two columns — increased and decreased — with inactive codes dimmed rather than hidden, so analysts learn the full vocabulary and can see what did not fire.
 
-<Figure label="Detail — reason codes" caption="Inactive reason codes stay visible at reduced opacity. Absence is information." ratio="16 / 8" />
+<Figure
+  src={reasonCodesImage}
+  alt="Two-column reason code list with active codes at full opacity and inactive codes dimmed"
+  label="Detail — reason codes"
+  caption="Inactive reason codes stay visible at reduced opacity. Absence is information."
+  ratio="16 / 8"
+/>
 
 A feedback control in the footer closes the loop: analysts flag explanations that do not hold up, which routes back to the risk team as reason-code tuning input rather than disappearing.
