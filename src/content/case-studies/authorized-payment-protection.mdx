@@ -1,6 +1,6 @@
 ---
 title: Authorized payment protection
-outcome: Three parties with different authority acted on the same fraud decision. We built a policy model that let a payment network, its member banks, and individual reviewers each act without overriding each other by accident.
+outcome: A payment network and its member banks had to act on the same irreversible fraud decision without stepping on each other. We built the policy model and review surfaces that made origin, destination, and authority legible in real time.
 company: Kount, an Equifax company
 role: Lead product designer
 team: 1 product director · 1 product owner · 1 engineering pod · 4 data scientists
@@ -10,90 +10,103 @@ year: 2026
 track: professional
 order: 1
 draft: true
-impactLead: Shipped the first version and set the direction for a fraud category that card fraud tooling cannot address.
+impactLead: Shipped the first version and set direction for a fraud category that card tooling cannot address.
 metrics:
   - value: "3"
-    label: authority tiers in the policy model
+    label: layers in the policy model
 impactNotes:
-  - "I shipped the first version and set direction, then was part of a reduction before outcomes matured. The evidence in this study is the decisions, not the results — stated plainly because the alternative is a number I cannot source."
+  - "I shipped the first version and set direction, then was part of a reduction before outcomes matured. The evidence in this study is the decisions, not the results. Stated plainly because the alternative is a number I cannot source."
 next: trust-score-explainability
 ---
 
 import Figure from "../../components/Figure.astro";
-import PullQuote from "../../components/PullQuote.astro";
 
 ## Context
 
-Colombia was about to make its payments irreversible, and the fraud tooling for what that changes did not exist yet.
+Colombia was about to make payments irreversible. The fraud tooling for that change did not exist yet.
 
-Bre-B, the instant-payment system from Banco de la República, was coming. Redeban — the country's largest payment processor, owned by its major banks and licensed as a low-value payment system administrator — would operate a federated node on it. Instant settlement is very good for people and very good for fraudsters, for the same reason: once the money moves it is gone, and there is no chargeback window in which to review the decision.
+Bre-B, the instant-payment system from Banco de la República, was coming online. Redeban, the country's largest payment processor, owned by its major banks and licensed as a low-value payment system administrator, would run a federated node on it. Instant settlement is good for people and good for fraudsters for the same reason: once the money moves, it is gone. There is no chargeback window left to clean up a bad decision.
 
-Equifax had a fraud platform. It had been built for merchants reviewing their own card-not-present orders, which is a different problem from the one Colombia was about to have. Public framing of Authorized Payment Protection on equifax.com and kount.com describes real-time analysis of both sender and destination account risk to surface money-mule activity and social engineering in milliseconds.
+Equifax already had a fraud platform built for merchants reviewing their own card-not-present orders. That is a different problem. Authorized push payment fraud is not about a stolen card. It is about a real customer who has been talked into sending money to the wrong place.
+
+Public product framing on equifax.com describes Authorized Payment Protection as real-time analysis of both origin and destination account risk, built to surface money-mule activity and social engineering before settlement. The work on this study was the product surface that made that claim usable for a network and the banks under it.
 
 ## The inversion
 
 Card fraud asks whether this cardholder is who they claim to be. Authorized push payment fraud asks whether this real, correctly authenticated customer is being deceived right now.
 
-That inversion breaks most of the assumptions underneath a fraud product. The victim authenticates successfully, because they are the actual account holder. They authorize deliberately, because they have been manipulated into believing they should. Every signal that normally indicates legitimacy is present and genuine. The fraud lives in the intent behind an otherwise clean transaction.
+That change breaks most of the assumptions under a fraud product. The victim authenticates successfully because they are the account holder. They authorize the payment on purpose because someone has convinced them they should. The usual legitimacy signals are present and genuine. The fraud sits in the intent behind a clean-looking transfer.
 
-<PullQuote attribution="[ Placeholder — replace with a real stakeholder quote or delete ]">
-  The customer is not lying to us. Someone else is lying to them.
-</PullQuote>
+The design problem follows from that. You are intervening against your own customer's stated request, in real time, without treating them like a criminal. Get the tone or the authority wrong and the product either blocks honest people or fails to stop the ones who need stopping.
 
-Which produces the design problem at the center of this work: you are intervening against your own customer's stated wishes, in real time, and you have to do it without treating them as a suspect. Get the tone wrong and you have shipped a product that insults people for trying to move their own money.
+## Three layers over one decision
 
-## Three tiers of authority over one decision
+Detection was not the hard part. Authority was.
 
-The hard part was never detection. It was that three parties, with three different levels of authority, all had a legitimate claim on the same decision.
+Redeban is owned by the bank consortium. It sets baseline rules that every participating bank has to follow. Individual banks then layer their own policies on top of that floor. Bank reviewers work the payments that get flagged, confirming or correcting signals from the model.
 
-The network set base policies and risk tolerances — a floor for participating institutions on its node. Individual banks layered their own policies on top of that floor. Bank reviewers worked the individual payments that got flagged.
+Redeban can override a bank's transactions when it believes there is fraud. Banks cannot undercut the network floor. Reviewers need to know whose rule fired and what they are allowed to do about it.
 
-None of these people work for each other. A bank cannot be told its risk appetite by a product a competitor also uses. A reviewer cannot be left guessing whether the rule in front of them is theirs to overturn. And the network cannot let a member quietly undercut a floor that exists to protect everyone on the rail.
+Banks and reviewers were intentionally kept from seeing Redeban's full policy set. That separation supported compliance and reduced the risk of internal misuse. The interface still had to make authority legible: what is binding, what is local, and what standing the person in the console has, without exposing the network floor as editable configuration.
 
-<Figure label="Policy inheritance" caption="Distinguishing network-set floors from bank-authored policy in a single list. [ Replace with recreated artifact. ]" />
+<Figure
+  label="Policy layers"
+  caption="Network floor, bank policy, and reviewer standing in one view. Origin of each rule stays visible so authority is never guessed."
+  ratio="16 / 9"
+/>
 
-So the interface had to answer three questions a single-tenant fraud tool never has to ask. Which of these rules did we set, and which did we inherit? What happens when a bank wants to be more permissive than the floor? And when a reviewer opens a flagged payment — whose rule caught this, and do I have standing to overturn it?
+The interface had to answer questions a merchant fraud tool never asks. Which rules are the network floor? Which did this bank add? When a payment is flagged, whose rule caught it, and what can the reviewer actually do?
 
-That last question is the trust-score problem one layer up. Not *why did the model score this 62*, but *whose judgment is this, and what authority do I have against it*. Inherited policy is invisible by default, and invisible authority is how reviewers end up either rubber-stamping decisions they do not understand or overriding ones they should not.
+That last question is the trust-score problem one layer up. Not only why the model scored this transfer the way it did, but whose judgment is binding and what standing the person in the console has against it.
 
 ## What we kept and what we cut
 
-The product shipped as a stripped-down fork of Payments Fraud, and the interesting work was in the stripping.
+The product shipped as a stripped-down fork of Payments Fraud. The useful work was in the stripping.
 
-We carried the platform core — organization and user management — because multi-tenant structure, roles, and permissions are the least market-specific thing in an enterprise product and rebuilding them buys nothing. We took the rules engine, the case queue manager, and the case review page from Payments Fraud, then stripped, optimized, and redesigned each of them for the APP problem.
+We kept the platform core: organization and user management. Multi-tenant structure, roles, and permissions are the least market-specific part of an enterprise product. Rebuilding them buys nothing.
 
-Three specific cuts carried the weight of the judgment.
+We took the rules engine, the case queue manager, and the case review page from Payments Fraud, then cut and redesigned each for APP.
 
-The rules engine had been built for a single-tenant merchant setting its own risk appetite. That model did not surface inheritance. APP required a three-tier policy surface where a network floor could not be undercut, a bank could layer its own rules without breaking the floor, and a reviewer could see the origin of every rule that fired. The older policy sets and segment model were genuinely useful for Payments Fraud. They were wrong here. Keeping them would have left authority invisible, which is exactly the failure mode the product could not afford.
+The rules engine still worked as a configuration surface. What had to change was hierarchy and visibility. Bank policies sat downstream of Redeban. Banks and reviewers could not see the full network policy set, both for compliance and to limit internal fraud risk. The product had to show that a bank's rules were subordinate without turning Redeban's floor into something a bank user could browse or edit. A flat single-tenant model could not do that.
 
-The case queue manager was next. Payments Fraud queues assumed a chargeback window. APP has none. Once the money moves it is gone. Queue policies, triggers, and assignment logic had to prioritize speed and clear escalation under irreversible settlement. The general-purpose queue tooling was optimized for that constraint rather than carried over as-is.
+The case queue manager assumed a chargeback window. APP has none. Once the money moves it is gone. Queue policy, triggers, and assignment had to favor speed and clear escalation under irreversible settlement.
 
-The case review page itself was redesigned around the authority question. Instead of a general order-details surface, the review had to answer whose policy caught the payment and what standing the reviewer had. That is the same problem the trust-score explainer solved for model opacity, one layer higher in the policy stack. The page became the place where inherited rules and local overrides were made legible in the same view.
+The case review page was rebuilt around authority and model signals. Instead of a general order-details screen, review had to show whose policy or model signal caught the payment and what the reviewer could do. Public product language emphasizes origin and destination risk, velocity into the payee account, account age, type, and status. The review surface had to make those factors and their policy source readable in the same place as the decision.
 
-The org hierarchy also needed a structural change. A network with member banks under it is a deeper tree than the merchant-under-account model the platform was originally designed around. That change was small in the data model and large in every screen that showed policy ownership.
+<Figure
+  label="Case review"
+  caption="Whose rule or signal caught this payment, and what standing does the reviewer have. Authority and model output share one surface."
+  ratio="16 / 10"
+/>
+
+The org hierarchy change was large in the data model and small on screen. Banks sat downstream of Redeban and only saw their own policies. Most of the complexity lived in how ownership and inheritance were stored, not in a denser UI.
 
 I had designed the original rules engine for Kount 360. Deciding which half of my own prior work survived into a different market was the most useful thing I did on this project.
 
-## Working with data science as a co-owner
+## Working with data science
 
-The models were not mine. The interface between what a model produced and what a human could defensibly act on was.
+The models were not mine. The interface between what a model produced and what a human could act on was.
 
-A four-person data science group owned detection. Models trained first on the Colombian network's data, with planned expansion to ueno bank in Paraguay, then the UK, Canada, and the US.
+A four-person data science group owned detection. Models trained first on the Colombian network's data, with planned expansion beyond that market.
 
-The non-negotiable for design was that the review surface had to show the origin of every decision, even when the underlying model stayed proprietary. We kept the model reasons at the policy layer rather than exposing weights. That preserved the defensibility the three-tier model required without handing fraudsters a map of the detection logic.
+Design's non-negotiable was that the review surface had to show the source of every decision, even when the underlying model stayed proprietary. Model reasons stayed at the policy and signal layer rather than exposing weights. That kept the layered model defensible without handing fraudsters a map of the detection logic.
 
-The roadmap also called for adding data streams, device data among them, so that a reviewer confirming or denying a flag fed labeled outcomes back into training. Designing the review surface as a training input rather than only a decision point changes what you ask a reviewer to record.
+The roadmap also called for richer data streams, including device data, so that a reviewer confirming or denying a flag could feed labeled outcomes back into training. Designing review as a training input, not only a decision point, changes what you ask someone to record.
 
 ## How design got upstream
 
-I speak Spanish, so I sat in stakeholder calls directly rather than reading a summary of them afterward.
+I am a native Spanish speaker, so I sat in stakeholder calls directly instead of reading a summary afterward.
 
-Small thing, large effect. Understanding the conversation at the source put design in the room while scope was still being set, instead of receiving requirements after the shape of the product had already been decided. Most designers argue they belong upstream. This was a concrete mechanism for getting there.
+Small mechanism, large effect. Hearing the conversation at the source put design in the room while scope was still open, instead of receiving requirements after the product shape was already fixed.
+
+I owned the policy surface, the review experience, and the cuts from Payments Fraud. Data science owned detection. Product owned prioritization across markets. The design pressure that mattered was refusing to ship a console where network floors and bank rules looked the same, or where the wrong people could see the wrong policies. Without that, the layered model would have existed in the data and disappeared in the interface.
 
 ## What I would have measured
 
 This shipped and I did not get to see the numbers.
 
-I was part of a reduction before results matured, and the only outcome available was early adoption. Rather than reach for something I cannot source, here is what I would have instrumented: reviewer override rate on network-set rules versus bank-set rules, because a high override rate on inherited policy would have meant the authority model was illegible, which was the entire risk. Then false-positive rate on flagged payments, and time-to-decision under the real-time constraint.
+I was part of a reduction before results matured. Early adoption was the only outcome available. Rather than invent a metric, here is what I would have instrumented: reviewer override rate on network-set rules versus bank-set rules, because a high override rate on the floor would have meant the authority model was still illegible. Then false-positive rate on flagged payments, and time-to-decision under the real-time constraint.
 
-What I can point to instead is why the category matters. Colombia's banking association has publicly identified instant payments as the sector's leading fraud risk, citing Brazil, where incidents grew more than 50% after Pix launched. In the UK, the Payment Systems Regulator's mandatory reimbursement framework moved APP fraud out of customer service and onto the balance sheet — which is what turns a detection problem into a product one. Public product pages on equifax.com and kount.com frame the same problem as real-time origin and destination risk analysis for money-mule and social-engineering patterns.
+What I can point to is why the category exists. Colombia's banking association has publicly called instant payments a leading fraud risk, citing Brazil's experience after Pix. In the UK, mandatory reimbursement moved APP fraud onto institutional balance sheets, which is what turns a detection problem into a product one. Equifax product pages frame the same problem as real-time origin and destination risk analysis for money-mule and social-engineering patterns.
+
+What shipped in the first version was a layered policy model, a queue tuned for irreversible settlement, and a review surface that answered whose rule or signal fired and what the reviewer could do about it. The product did not invent a new detection category. It made that category usable for a network and the banks under it. Card fraud tooling never had to solve that problem.
