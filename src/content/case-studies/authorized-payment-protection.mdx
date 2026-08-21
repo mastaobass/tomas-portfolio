@@ -20,6 +20,8 @@ next: trust-score-explainability
 ---
 
 import Figure from "../../components/Figure.astro";
+import policyTiersImage from "../../assets/app-policy-tiers.jpg";
+import caseReviewImage from "../../assets/app-case-review.png";
 
 ## Context
 
@@ -50,6 +52,8 @@ Redeban can override a bank's transactions when it believes there is fraud. Bank
 Banks and reviewers were intentionally kept from seeing Redeban's full policy set. That separation supported compliance and reduced the risk of internal misuse. The interface still had to make authority legible: what is binding, what is local, and what standing the person in the console has, without exposing the network floor as editable configuration.
 
 <Figure
+  src={policyTiersImage}
+  alt="Three-layer policy model showing network floor, bank policy, and reviewer standing with origin of each rule visible"
   label="Policy layers"
   caption="Network floor, bank policy, and reviewer standing in one view. Origin of each rule stays visible so authority is never guessed."
   ratio="16 / 9"
@@ -74,6 +78,8 @@ The case queue manager assumed a chargeback window. APP has none. Once the money
 The case review page was rebuilt around authority and model signals. Instead of a general order-details screen, review had to show whose policy or model signal caught the payment and what the reviewer could do. Public product language emphasizes origin and destination risk, velocity into the payee account, account age, type, and status. The review surface had to make those factors and their policy source readable in the same place as the decision.
 
 <Figure
+  src={caseReviewImage}
+  alt="Case review surface showing rule or signal origin and reviewer standing for an authorized payment decision"
   label="Case review"
   caption="Whose rule or signal caught this payment, and what standing does the reviewer have. Authority and model output share one surface."
   ratio="16 / 10"
