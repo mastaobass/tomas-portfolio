@@ -51,6 +51,10 @@ const { data, nextStudy, cover } = Astro.props;
     everything else sits in a measure-constrained reading column. Because grid
     auto-placement is sparse, the element after an h2 shares its row — so each
     label aligns with the top of the section it names.
+
+    Section spacing must apply to BOTH the h2 and its paired first child.
+    Margin only on the h2 pushes the label text down while the first paragraph
+    stays at the top of the shared row, which is what broke alignment.
   */
   .prose {
     display: grid;
@@ -69,7 +73,14 @@ const { data, nextStudy, cover } = Astro.props;
     line-height: 1.6;
     margin-block-start: var(--space-3xl);
   }
-  .prose > h2:first-child { margin-block-start: 0; }
+  /* Keep label and first content element top-aligned within the shared row. */
+  .prose > h2 + * {
+    margin-block-start: var(--space-3xl);
+  }
+  .prose > h2:first-child,
+  .prose > h2:first-child + * {
+    margin-block-start: 0;
+  }
   .prose > p {
     font-family: var(--font-display);
     font-size: var(--type-body-lg);
@@ -105,5 +116,7 @@ const { data, nextStudy, cover } = Astro.props;
     .prose { grid-template-columns: minmax(0, 1fr); }
     .prose > *, .prose > h2 { grid-column: 1; }
     .prose > h2 { margin-block-start: var(--space-2xl); }
+    .prose > h2 + * { margin-block-start: 0; }
+    .prose > h2:first-child { margin-block-start: 0; }
   }
 </style>
