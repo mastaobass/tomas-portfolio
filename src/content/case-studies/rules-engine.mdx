@@ -24,6 +24,7 @@ next: autonome
 import Figure from "../../components/Figure.astro";
 import paperWireframes from "../../assets/rules-paper-wireframes.png";
 import segmentEditor from "../../assets/rules-segment-editor.png";
+import setsStaging from "../../assets/rules-sets-staging.png";
 
 ## Context
 
@@ -80,9 +81,11 @@ Sets came back with a clearer job. A set is a collection of segments and policie
 Historical versions stay readable and locked. Restore is explicit. That is the path to change policy without treating every edit as a production event.
 
 <Figure
+  src={setsStaging}
+  alt="Policy Management set views showing the active set, pending changes, and publish path"
   label="Sets and staging"
   caption="Active set, pending changes, and a publish path. Staging is the difference between configuration and a leap of faith."
-  ratio="3 / 4"
+  ratio="16 / 10"
 />
 
 Public product language on Kount's support site matches this model: sets, segments, policies, pending changes, and version history. The design work was making that hierarchy legible in the console, not inventing a parallel vocabulary.
