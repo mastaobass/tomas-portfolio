@@ -22,6 +22,8 @@ next: autonome
 ---
 
 import Figure from "../../components/Figure.astro";
+import paperWireframes from "../../assets/rules-paper-wireframes.png";
+import segmentEditor from "../../assets/rules-segment-editor.png";
 
 ## Context
 
@@ -42,6 +44,8 @@ Kount Command was moving to the cloud as Kount One. Rule managers could only com
 I started on paper. The goal was to understand how OR changes the evaluation of IF and ELSE before anyone committed a screen. Engineering and product sat with those sketches so the requirements and the evaluation model stayed aligned.
 
 <Figure
+  src={paperWireframes}
+  alt="Hand-drawn paper wireframes exploring OR logic and nested policy structure"
   label="Paper wireframes"
   caption="Early structure work for OR logic and nested policy organization. The evaluation model had to be right before the UI was worth polishing."
   ratio="3 / 4"
@@ -60,6 +64,8 @@ Triggers were renamed segments. A segment is a named slice of traffic for an eve
 Policy sets were removed in this phase. Segments and policies absorbed more of the structure. Scheduling got harder without sets. Research included sessions with analysts, heatmaps on rule-creation drop-off, and several editor directions. We tested pure drag-and-drop against a more code-like editor and landed on a hybrid that kept power without forcing everyone into a syntax surface.
 
 <Figure
+  src={segmentEditor}
+  alt="Segment editor in Kount 360 Policy Management showing conditions, tags, and linked segments"
   label="Segment and policy editor"
   caption="Segments group traffic. Policies attach conditions and outcomes. The surface has to make both readable in the same place."
   ratio="16 / 9"
