@@ -17,10 +17,9 @@ impactNotes:
 ---
 
 import Figure from "../../components/Figure.astro";
-// After you upload the three JPGs to src/assets, uncomment these three imports and the matching src props below.
-// import researchBoard from "../../assets/autonome-research-board.jpg";
-// import handleSketch from "../../assets/autonome-handle-sketch.jpg";
-// import productUse from "../../assets/autonome-product-use.jpg";
+import researchBoard from "../../assets/autonome-research-board.jpg";
+import handleSketch from "../../assets/autonome-handle-sketch.jpg";
+import productUse from "../../assets/autonome-product-use.jpg";
 
 ## Context
 
@@ -35,6 +34,8 @@ Ethnographic work in home kitchens, interviews across user groups, and structure
 Observation and self-documentation matters more here than survey averages. The frustration was specific: mess, noise, uncertainty about contamination, and a process that never became automatic.
 
 <Figure
+  src={researchBoard}
+  alt="Research board titled It's Not You It's Meat with HMW statements, insights, values, and strategy canvas"
   label="Research board"
   caption="Synthesis from ethnography and interviews. The HMW statements and insights locked the problem on raw meat handling, not a broader kitchen brand."
   ratio="3 / 4"
@@ -47,6 +48,8 @@ Ideation used a vector map and a deliberate bias toward risk (creativity plus ri
 The decisive cut was from a three-tool kit to a single tool. Manufacturability and market fit both improved. The product became the Meat Handler with an Anchor attachment under the autonome brand, built around Grablock mating technology.
 
 <Figure
+  src={handleSketch}
+  alt="Pencil sketch of handle v2 with 360 degree rotation, side A and side B face details"
   label="Handle concept"
   caption="Handle exploration: shorter grip for leverage, 360 rotation that clicks into place, and interchangeable faces. The sketch is where Grablock started to take shape."
   ratio="4 / 3"
@@ -59,6 +62,8 @@ A provisional patent was filed on Grablock. Retail target was set at $19.99 base
 The work was never only industrial design. It was research, product definition, and a business argument that could survive contact with cost and channel reality.
 
 <Figure
+  src={productUse}
+  alt="Meat Handler tool holding raw chicken breast on a cutting board during prep"
   label="Product in use"
   caption="Meat Handler and Anchor in a real prep sequence. One tool, not a kit. The form had to read as simple enough for a first-time cook and serious enough for the job."
   ratio="16 / 9"
