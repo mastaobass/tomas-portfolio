@@ -1,11 +1,10 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 
-// GitHub Pages preview lives at <site><base>.
-// AT CUTOVER: set site to "https://www.tomas-stonehouse.com" and base to "/".
+// Custom domain cutover. Push to main deploys via .github/workflows/deploy.yml.
 export default defineConfig({
-  site: "https://mastaobass.github.io",
-  base: "/tomas-portfolio",
+  site: "https://www.tomas-stonehouse.com",
+  base: "/",
   trailingSlash: "ignore",
   integrations: [mdx()],
 });
