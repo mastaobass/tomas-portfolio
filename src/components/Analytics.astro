@@ -1,0 +1,141 @@
+---
+import { POSTHOG_KEY, POSTHOG_HOST } from "../lib/analytics-config.js";
+
+const key = import.meta.env.PUBLIC_POSTHOG_KEY || POSTHOG_KEY;
+const host = import.meta.env.PUBLIC_POSTHOG_HOST || POSTHOG_HOST;
+---
+{key ? (
+  <>
+    <link rel="preconnect" href={host} crossorigin />
+    <script is:inline id="ph-boot" data-ph-key={key} data-ph-host={host}>
+      (function () {
+        var boot = document.currentScript || document.getElementById("ph-boot");
+        var key = boot && boot.getAttribute("data-ph-key");
+        var host =
+          (boot && boot.getAttribute("data-ph-host")) || "https://us.i.posthog.com";
+        if (!key) return;
+
+        !function (t, e) {
+          var o, n, p, r;
+          e.__SV || ((window.posthog = e), (e._i = []), (e.init = function (i, s, a) {
+            function g(t, e) {
+              var o = e.split(".");
+              2 == o.length && ((t = t[o[0]]), (e = o[1]));
+              t[e] = function () {
+                t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+              };
+            }
+            (p = t.createElement("script")).type = "text/javascript";
+            p.crossOrigin = "anonymous";
+            p.async = !0;
+            p.src = s.api_host + "/static/array.js";
+            (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r);
+            var u = e;
+            void 0 !== a ? (u = e[a] = []) : (a = "posthog");
+            u.people = u.people || [];
+            u.toString = function (t) {
+              var e = "posthog";
+              "posthog" !== a && (e += "." + a);
+              t || (e += " (stub)");
+              return e;
+            };
+            u.people.toString = function () {
+              return u.toString(1) + ".people (stub)";
+            };
+            o = "capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagResult reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId".split(" ");
+            for (n = 0; n < o.length; n++) g(u, o[n]);
+            e._i.push([i, s, a]);
+          }), (e.__SV = 1));
+        }(document, window.posthog || []);
+
+        posthog.init(key, {
+          api_host: host,
+          ui_host: "https://us.posthog.com",
+          defaults: "2026-05-30",
+          person_profiles: "identified_only",
+          capture_pageview: true,
+          capture_pageleave: true,
+          autocapture: true,
+          persistence: "localStorage+cookie",
+          respect_dnt: true,
+          session_recording: { maskAllInputs: true },
+          loaded: function (ph) {
+            wire(ph);
+          },
+        });
+
+        function pageKind() {
+          var path = location.pathname.replace(/\/+$/, "") || "/";
+          if (path === "/") return "home";
+          if (/\/work\/.+/.test(path)) return "case_study";
+          if (path.endsWith("/work")) return "work_index";
+          if (path.indexOf("northwestern") !== -1) return "northwestern";
+          if (path.indexOf("about") !== -1) return "about";
+          if (path.indexOf("contact") !== -1) return "contact";
+          return "page";
+        }
+
+        function wire(ph) {
+          var kind = pageKind();
+          ph.register({ site: "tomas-stonehouse", page_kind: kind });
+
+          if (kind === "case_study") {
+            ph.capture("case_study_view", {
+              title: document.title,
+              path: location.pathname,
+            });
+          }
+
+          document.addEventListener("click", function (event) {
+            var el = event.target.closest("[data-ph]");
+            if (!el) return;
+            var props = {
+              href: el.getAttribute("href") || undefined,
+              page_kind: kind,
+            };
+            var attrs = el.attributes;
+            for (var i = 0; i < attrs.length; i++) {
+              var name = attrs[i].name;
+              if (name.indexOf("data-ph-") === 0) {
+                props[name.slice(8)] = attrs[i].value;
+              }
+            }
+            ph.capture(el.getAttribute("data-ph"), props);
+          });
+
+          var marks = [25, 50, 75, 100];
+          var seen = {};
+          var ticking = false;
+          function measure() {
+            ticking = false;
+            var max = document.documentElement.scrollHeight - window.innerHeight;
+            if (max <= 0) return;
+            var pct = Math.round((window.scrollY / max) * 100);
+            for (var i = 0; i < marks.length; i++) {
+              var mark = marks[i];
+              if (pct >= mark && !seen[mark]) {
+                seen[mark] = true;
+                ph.capture("scroll_depth", {
+                  percent: mark,
+                  page_kind: kind,
+                  path: location.pathname,
+                });
+              }
+            }
+          }
+          window.addEventListener(
+            "scroll",
+            function () {
+              if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(measure);
+              }
+            },
+            { passive: true },
+          );
+          measure();
+        }
+      })();
+    </script>
+  </>
+) : null}
