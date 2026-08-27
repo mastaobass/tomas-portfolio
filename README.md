@@ -37,6 +37,26 @@ Create `src/content/case-studies/<slug>.mdx` with frontmatter (`title`, `outcome
 
 `track: professional` or `track: northwestern` controls which index lists the study.
 
+## Analytics
+
+The site uses [PostHog](https://posthog.com), a free Heap-style product analytics tool: autocapture of clicks and pageviews, session replay, funnels, and named events for resume downloads, contact clicks, case study opens, and scroll depth.
+
+Free cloud plan is 1 million events and 5,000 session recordings per month. No credit card.
+
+1. Create an account at [us.posthog.com/signup](https://us.posthog.com/signup).
+2. Open **Project settings** and copy the **Project API Key** (starts with `phc_`).
+3. Paste it into `src/lib/analytics-config.js` as `POSTHOG_KEY`, then push to `main`.
+4. In PostHog, turn on **Session replay** and add `www.tomas-stonehouse.com` under authorized domains if that field is shown.
+
+Until a key is set, the analytics script is not included in the build.
+
+Named events already wired:
+
+- `case_study_open` / `case_study_view`
+- `resume_download`
+- `contact_email` / `contact_linkedin`
+- `scroll_depth` at 25 / 50 / 75 / 100
+
 ## Deploy
 
 Push to `main`. GitHub Actions builds and publishes to GitHub Pages (`.github/workflows/deploy.yml`).
