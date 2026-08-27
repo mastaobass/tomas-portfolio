@@ -4,7 +4,7 @@ const { title, href } = Astro.props;
 ---
 <section class="next shell">
   <hr class="rule" />
-  <a class="next__link" href={url(href)}>
+  <a class="next__link" href={url(href)} data-ph="case_study_open" data-ph-title={title} data-ph-source="next">
     <span>
       <span class="eyebrow">Next</span>
       <span class="next__title display">{title}</span>

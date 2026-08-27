@@ -3,7 +3,7 @@ import { url } from "../lib/path.js";
 const { index, title, outcome, company, role, year, href } = Astro.props;
 ---
 <li class="row">
-  <a class="row__link" href={url(href)}>
+  <a class="row__link" href={url(href)} data-ph="case_study_open" data-ph-title={title} data-ph-company={company}>
     <span class="row__index">{String(index).padStart(2, "0")}</span>
     <span class="row__body">
       <span class="row__title display">{title}</span>
