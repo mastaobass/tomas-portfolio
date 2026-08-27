@@ -3,16 +3,16 @@ import { url } from "../lib/path.js";
 
 const email = "tomas.stonehouse@gmail.com";
 const links = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/tomasstonehouse" },
-  { label: "Resume", href: url("/tomas-stonehouse-resume.pdf") },
-  { label: "Email", href: `mailto:${email}` },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/tomasstonehouse", event: "contact_linkedin" },
+  { label: "Resume", href: url("/tomas-stonehouse-resume.pdf"), event: "resume_download" },
+  { label: "Email", href: `mailto:${email}`, event: "contact_email" },
 ];
 ---
 <footer class="footer">
   <div class="shell">
     <p class="eyebrow">Contact</p>
     <p class="display footer__line">Currently open to senior and staff product design roles.</p>
-    <a class="footer__email" href={`mailto:${email}`}>{email}</a>
+    <a class="footer__email" href={`mailto:${email}`} data-ph="contact_email">{email}</a>
 
     <hr class="rule footer__rule" />
 
@@ -20,7 +20,7 @@ const links = [
       <small>© {new Date().getFullYear()} Tomás Stonehouse</small>
       <ul class="footer__links">
         {links.map((l) => (
-          <li><a href={l.href}>{l.label}</a></li>
+          <li><a href={l.href} data-ph={l.event}>{l.label}</a></li>
         ))}
       </ul>
     </div>
