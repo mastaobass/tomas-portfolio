@@ -1,9 +1,24 @@
 ---
-import { POSTHOG_KEY, POSTHOG_HOST } from "../lib/analytics-config.js";
+import { POSTHOG_KEY, POSTHOG_HOST, GA_MEASUREMENT_ID } from "../lib/analytics-config.js";
 
 const key = import.meta.env.PUBLIC_POSTHOG_KEY || POSTHOG_KEY;
 const host = import.meta.env.PUBLIC_POSTHOG_HOST || POSTHOG_HOST;
+const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
 ---
+{gaId ? (
+  <>
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} is:inline></script>
+    <script is:inline define:vars={{ gaId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", gaId);
+    </script>
+  </>
+) : null}
 {key ? (
   <>
     <link rel="preconnect" href={host} crossorigin />
