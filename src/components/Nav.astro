@@ -74,29 +74,62 @@ function isCurrent(href) {
 <script>
   function setupWorkNav() {
     const item = document.querySelector("[data-work-nav]");
-    if (!item) return;
+    if (!item || item.dataset.ready === "true") return;
+    item.dataset.ready = "true";
+
     const trigger = item.querySelector("[data-work-trigger]");
     if (!trigger) return;
 
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const closeDelay = 280;
+    let closeTimer = 0;
 
     const setOpen = (open) => {
       item.classList.toggle("is-open", open);
       trigger.setAttribute("aria-expanded", String(open));
     };
 
+    const openMenu = () => {
+      window.clearTimeout(closeTimer);
+      setOpen(true);
+    };
+
+    const scheduleClose = () => {
+      window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(() => setOpen(false), closeDelay);
+    };
+
+    item.addEventListener("mouseenter", () => {
+      if (finePointer.matches) openMenu();
+    });
+
+    item.addEventListener("mouseleave", () => {
+      if (finePointer.matches) scheduleClose();
+    });
+
+    item.addEventListener("focusin", openMenu);
+
+    item.addEventListener("focusout", (event) => {
+      if (!item.contains(event.relatedTarget)) scheduleClose();
+    });
+
     trigger.addEventListener("click", (event) => {
       if (finePointer.matches) return;
       event.preventDefault();
+      window.clearTimeout(closeTimer);
       setOpen(!item.classList.contains("is-open"));
     });
 
     document.addEventListener("click", (event) => {
-      if (!item.contains(event.target)) setOpen(false);
+      if (!item.contains(event.target)) {
+        window.clearTimeout(closeTimer);
+        setOpen(false);
+      }
     });
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
+        window.clearTimeout(closeTimer);
         setOpen(false);
         trigger.focus();
       }
@@ -155,6 +188,17 @@ function isCurrent(href) {
     border-right: 1.25px solid currentColor;
     border-bottom: 1.25px solid currentColor;
     transform: rotate(45deg) translateY(-1px);
+  }
+
+  /* Hit area covering the visual gap and the left-extending panel
+     so the pointer can travel from Work onto the menu. */
+  .nav__item--work::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 288px;
+    height: 16px;
   }
 
   .nav__menu {
@@ -224,6 +268,7 @@ function isCurrent(href) {
 
   @media (max-width: 640px) {
     .nav__item--work { position: static; }
+    .nav__item--work::after { content: none; }
     .nav__menu {
       left: var(--layout-gutter);
       right: var(--layout-gutter);
