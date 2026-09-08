@@ -6,14 +6,14 @@ const links = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/tomasstonehouse", event: "contact_linkedin" },
   { label: "Resume", href: url("/tomas-stonehouse-resume.pdf"), event: "resume_download" },
   { label: "Email", href: `mailto:${email}`, event: "contact_email" },
-  { label: "Storybook", href: "https://mastaobass.github.io/trust-score-ds/", event: "code_storybook" },
+  { label: "Storybook", href: "https://mastaobass.github.io/trust-score-ds/?path=/story/compositions-reviewqueue--loaded", event: "code_storybook" },
   { label: "GitHub", href: "https://github.com/mastaobass/trust-score-ds", event: "code_github" },
 ];
 ---
 <footer class="footer">
   <div class="shell">
     <p class="eyebrow">Contact</p>
-    <p class="display footer__line">Currently open to senior and staff product design roles.</p>
+    <p class="display footer__line">Currently open to senior and staff product design roles, and to hybrid design-engineer seats.</p>
     <a class="footer__email" href={`mailto:${email}`} data-ph="contact_email">{email}</a>
 
     <hr class="rule footer__rule" />
@@ -34,7 +34,7 @@ const links = [
   .footer__line {
     font-size: var(--type-h1);
     margin-block: var(--space-lg) var(--space-md);
-    max-width: 22ch;
+    max-width: 26ch;
   }
   .footer__email {
     font-family: var(--font-display);
