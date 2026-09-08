@@ -6,6 +6,8 @@ const links = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/tomasstonehouse", event: "contact_linkedin" },
   { label: "Resume", href: url("/tomas-stonehouse-resume.pdf"), event: "resume_download" },
   { label: "Email", href: `mailto:${email}`, event: "contact_email" },
+  { label: "Storybook", href: "https://mastaobass.github.io/trust-score-ds/", event: "code_storybook" },
+  { label: "GitHub", href: "https://github.com/mastaobass/trust-score-ds", event: "code_github" },
 ];
 ---
 <footer class="footer">
@@ -51,7 +53,7 @@ const links = [
     font-size: var(--type-caption);
     color: var(--ink-muted);
   }
-  .footer__links { display: flex; gap: var(--space-lg); list-style: none; margin: 0; padding: 0; }
+  .footer__links { display: flex; flex-wrap: wrap; gap: var(--space-lg); list-style: none; margin: 0; padding: 0; }
   .footer__links a { color: var(--ink-secondary); border-bottom: 1px solid transparent; }
   .footer__links a:hover { border-bottom-color: var(--ink-primary); }
 </style>
