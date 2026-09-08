@@ -18,6 +18,7 @@ const { label, note, studies, startIndex = 1 } = Astro.props;
         role={s.data.role}
         year={s.data.year}
         href={`/work/${s.id}`}
+        code={s.data.code}
       />
     ))}
   </ul>
