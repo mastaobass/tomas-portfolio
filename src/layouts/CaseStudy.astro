@@ -12,6 +12,14 @@ const { data, nextStudy, cover } = Astro.props;
     <p class="eyebrow">{data.company} · {data.year}</p>
     <h1 class="display hero__title">{data.title}</h1>
     <p class="display hero__outcome">{data.outcome}</p>
+    {data.code && (
+      <p class="hero__code">
+        Live component kit
+        <a href={data.code.storybook} target="_blank" rel="noopener noreferrer" data-ph="code_storybook">Storybook</a>
+        <span aria-hidden="true">·</span>
+        <a href={data.code.github} target="_blank" rel="noopener noreferrer" data-ph="code_github">GitHub</a>
+      </p>
+    )}
   </header>
 
   <MetaBar role={data.role} team={data.team} timeframe={data.timeframe} platform={data.platform} />
@@ -41,6 +49,22 @@ const { data, nextStudy, cover } = Astro.props;
     line-height: 1.45;
     color: var(--ink-secondary);
     max-width: 62ch;
+  }
+  .hero__code {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    margin-block-start: var(--space-lg);
+    font-size: var(--type-caption);
+    color: var(--ink-muted);
+  }
+  .hero__code a {
+    color: var(--ink-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .hero__code a:hover {
+    color: var(--ink-primary);
+    border-bottom-color: var(--ink-primary);
   }
   .cover { padding-block-end: var(--space-3xl); }
 </style>
