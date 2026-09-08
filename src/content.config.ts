@@ -27,6 +27,13 @@ const caseStudies = defineCollection({
       .array(z.object({ value: z.string(), label: z.string() }))
       .default([]),
     next: z.string().optional(),
+    // Optional shipped-in-code proof. Renders under the homepage row.
+    code: z
+      .object({
+        storybook: z.string().url(),
+        github: z.string().url(),
+      })
+      .optional(),
   }),
 });
 
