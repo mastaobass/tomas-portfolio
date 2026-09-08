@@ -16,7 +16,7 @@ impactNotes:
   - "Those are Equifax's published descriptions of the shipped product, not outcomes I measured. I designed the interface; I did not run the study that would let me claim a number, and I would rather say so than round one up."
 next: authorized-payment-protection
 code:
-  storybook: https://mastaobass.github.io/trust-score-ds/
+  storybook: https://mastaobass.github.io/trust-score-ds/?path=/story/compositions-reviewqueue--loaded
   github: https://github.com/mastaobass/trust-score-ds
 ---
 
@@ -26,6 +26,8 @@ import researchImage from "../../assets/research-trust-image.png";
 import baselineImage from "../../assets/trust-score-baseline.jpg";
 import heroImage from "../../assets/trust-score-hero.png";
 import reasonCodesImage from "../../assets/reason-codes.png";
+import queueImage from "../../assets/trust-score-queue.png";
+import reconstructedModal from "../../assets/trust-score-reconstructed-modal.png";
 
 ## Context
 
@@ -87,3 +89,23 @@ The waterfall starts at the 80.0 baseline and shows eight signal categories movi
 />
 
 A feedback control in the footer closes the loop: analysts flag explanations that do not hold up, which routes back to the risk team as reason-code tuning input rather than disappearing.
+
+## In code
+
+The original Figma file is Equifax IP. The public kit is the same product slice rebuilt: a ten-row review queue that opens the explainer. The constraints did not change. Weights stay hidden. Reasons are pre-scripted. The visual baseline is pinned at 80.0.
+
+<Figure
+  src={queueImage}
+  alt="Reconstructed payment review queue with ten transactions, trust scores, and decision statuses"
+  label="Reconstruction — review queue"
+  caption="Ten reconstructed payments. Open a row to see the score as an argument. This is the surface analysts lived in, not a component gallery."
+/>
+
+<Figure
+  src={reconstructedModal}
+  alt="Reconstructed trust score explainer for order 48291-C showing score 85.6, a composition waterfall from the 80.0 baseline, two-column reason codes, and approve, hold, and decline actions"
+  label="Reconstruction — explainer"
+  caption="The same modal, now a React composition. Approve, hold, and decline write back to the queue. Feedback routes to reason-code tuning. The score itself does not change."
+/>
+
+Click a row in the [live kit](https://mastaobass.github.io/trust-score-ds/?path=/story/compositions-reviewqueue--loaded). Source is on [GitHub](https://github.com/mastaobass/trust-score-ds).
