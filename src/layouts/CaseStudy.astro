@@ -14,9 +14,17 @@ const { data, nextStudy, cover } = Astro.props;
     <p class="display hero__outcome">{data.outcome}</p>
     {data.code && (
       <p class="hero__code">
-        Live component kit
-        <a href={data.code.storybook} target="_blank" rel="noopener noreferrer" data-ph="code_storybook">Storybook</a>
-        <span aria-hidden="true">·</span>
+        In code
+        {data.code.console && (
+          <a href={data.code.console} target="_blank" rel="noopener noreferrer" data-ph="code_console">Review console</a>
+        )}
+        {data.code.console && data.code.github && <span aria-hidden="true">·</span>}
+        {data.code.storybook && !data.code.console && (
+          <>
+            <a href={data.code.storybook} target="_blank" rel="noopener noreferrer" data-ph="code_storybook">Storybook</a>
+            <span aria-hidden="true">·</span>
+          </>
+        )}
         <a href={data.code.github} target="_blank" rel="noopener noreferrer" data-ph="code_github">GitHub</a>
       </p>
     )}

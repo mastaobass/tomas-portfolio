@@ -30,7 +30,8 @@ const caseStudies = defineCollection({
     // Optional shipped-in-code proof. Renders under the homepage row.
     code: z
       .object({
-        storybook: z.string().url(),
+        console: z.string().url().optional(),
+        storybook: z.string().url().optional(),
         github: z.string().url(),
       })
       .optional(),

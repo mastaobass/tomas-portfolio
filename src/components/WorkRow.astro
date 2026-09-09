@@ -18,9 +18,17 @@ const { index, title, outcome, company, role, year, href, code } = Astro.props;
     <p class="row__code">
       <span class="row__code-spacer" aria-hidden="true"></span>
       <span class="row__code-links">
-        Live component kit
-        <a href={code.storybook} target="_blank" rel="noopener noreferrer" data-ph="code_storybook">Storybook</a>
-        <span aria-hidden="true">·</span>
+        In code
+        {code.console && (
+          <a href={code.console} target="_blank" rel="noopener noreferrer" data-ph="code_console">Review console</a>
+        )}
+        {code.console && code.github && <span aria-hidden="true">·</span>}
+        {code.storybook && !code.console && (
+          <>
+            <a href={code.storybook} target="_blank" rel="noopener noreferrer" data-ph="code_storybook">Storybook</a>
+            <span aria-hidden="true">·</span>
+          </>
+        )}
         <a href={code.github} target="_blank" rel="noopener noreferrer" data-ph="code_github">GitHub</a>
       </span>
     </p>

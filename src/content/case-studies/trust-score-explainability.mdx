@@ -16,7 +16,7 @@ impactNotes:
   - "Those are Equifax's published descriptions of the shipped product, not outcomes I measured. I designed the interface; I did not run the study that would let me claim a number, and I would rather say so than round one up."
 next: authorized-payment-protection
 code:
-  storybook: https://mastaobass.github.io/trust-score-ds/?path=/story/compositions-reviewqueue--loaded
+  console: https://mastaobass.github.io/trust-score-ds/console/
   github: https://github.com/mastaobass/trust-score-ds
 ---
 
@@ -92,13 +92,13 @@ A feedback control in the footer closes the loop: analysts flag explanations tha
 
 ## In code
 
-The original Figma file is Equifax IP. The public kit is the same product slice rebuilt: a ten-row review queue that opens the explainer. The constraints did not change. Weights stay hidden. Reasons are pre-scripted. The visual baseline is pinned at 80.0.
+The original Figma file is Equifax IP. The public kit is the same product slice rebuilt: a ten-row review queue that opens the Payments Fraud case. The score explainer lives on that case, not on the table. The constraints did not change. Weights stay hidden. Reasons are pre-scripted. The visual baseline is pinned at 80.0.
 
 <Figure
   src={queueImage}
   alt="Reconstructed payment review queue with ten transactions, trust scores, and decision statuses"
   label="Reconstruction — review queue"
-  caption="Ten reconstructed payments. Open a row to see the score as an argument. This is the surface analysts lived in, not a component gallery."
+  caption="Ten reconstructed payments. Open a row to work the payments-fraud case. This is the surface analysts lived in, not a component gallery."
 />
 
 <Figure
@@ -108,4 +108,4 @@ The original Figma file is Equifax IP. The public kit is the same product slice 
   caption="The same modal, now a React composition. Approve, hold, and decline write back to the queue. Feedback routes to reason-code tuning. The score itself does not change."
 />
 
-Click a row in the [live kit](https://mastaobass.github.io/trust-score-ds/?path=/story/compositions-reviewqueue--loaded). Source is on [GitHub](https://github.com/mastaobass/trust-score-ds).
+Open Northwind or Harbor in the [live console](https://mastaobass.github.io/trust-score-ds/console/). Source is on [GitHub](https://github.com/mastaobass/trust-score-ds). The component kit is still in [Storybook](https://mastaobass.github.io/trust-score-ds/?path=/story/compositions-casedetail--northwind).
