@@ -1,13 +1,12 @@
 ---
 import { url } from "../lib/path.js";
+import SocialLinks from "./SocialLinks.astro";
 
 const email = "tomas.stonehouse@gmail.com";
 const links = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/tomasstonehouse", event: "contact_linkedin" },
   { label: "Resume", href: url("/tomas-stonehouse-resume.pdf"), event: "resume_download" },
   { label: "Email", href: `mailto:${email}`, event: "contact_email" },
   { label: "Review console", href: "https://mastaobass.github.io/trust-score-ds/console/", event: "code_console" },
-  { label: "GitHub", href: "https://github.com/mastaobass/trust-score-ds", event: "code_github" },
 ];
 ---
 <footer class="footer">
@@ -20,11 +19,14 @@ const links = [
 
     <div class="footer__bottom">
       <small>© {new Date().getFullYear()} Tomás Stonehouse</small>
-      <ul class="footer__links">
-        {links.map((l) => (
-          <li><a href={l.href} data-ph={l.event}>{l.label}</a></li>
-        ))}
-      </ul>
+      <div class="footer__meta">
+        <ul class="footer__links">
+          {links.map((l) => (
+            <li><a href={l.href} data-ph={l.event}>{l.label}</a></li>
+          ))}
+        </ul>
+        <SocialLinks />
+      </div>
     </div>
   </div>
 </footer>
@@ -52,6 +54,12 @@ const links = [
     justify-content: space-between;
     font-size: var(--type-caption);
     color: var(--ink-muted);
+  }
+  .footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md) var(--space-lg);
   }
   .footer__links { display: flex; flex-wrap: wrap; gap: var(--space-lg); list-style: none; margin: 0; padding: 0; }
   .footer__links a { color: var(--ink-secondary); border-bottom: 1px solid transparent; }

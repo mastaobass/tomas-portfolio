@@ -1,6 +1,7 @@
 ---
 import { url } from "../lib/path.js";
 import { getStudies } from "../lib/studies.js";
+import SocialLinks from "./SocialLinks.astro";
 
 const professional = await getStudies("professional");
 
@@ -20,54 +21,57 @@ function isCurrent(href) {
 ---
 <nav class="nav shell" aria-label="Primary">
   <a class="nav__mark" href={url("/")}>Tomás Stonehouse</a>
-  <ul class="nav__links">
-    <li class="nav__item nav__item--work" data-work-nav>
-      <a
-        class="nav__work-trigger"
-        href={url("/work")}
-        data-work-trigger
-        aria-expanded="false"
-        aria-haspopup="true"
-        aria-controls="work-menu"
-        aria-current={onWork ? "page" : undefined}
-      >
-        Work
-        <span class="nav__chevron" aria-hidden="true"></span>
-      </a>
-      <div class="nav__menu" id="work-menu" data-work-menu role="menu" aria-label="Case studies">
+  <div class="nav__end">
+    <ul class="nav__links">
+      <li class="nav__item nav__item--work" data-work-nav>
         <a
-          class="nav__menu-link nav__menu-link--index"
+          class="nav__work-trigger"
           href={url("/work")}
-          role="menuitem"
-          aria-current={rawPath === workRoot ? "page" : undefined}
+          data-work-trigger
+          aria-expanded="false"
+          aria-haspopup="true"
+          aria-controls="work-menu"
+          aria-current={onWork ? "page" : undefined}
         >
-          All work
+          Work
+          <span class="nav__chevron" aria-hidden="true"></span>
         </a>
-        {professional.map((study, i) => {
-          const href = `/work/${study.id}`;
-          return (
-            <a
-              class="nav__menu-link"
-              href={url(href)}
-              role="menuitem"
-              aria-current={isCurrent(href) ? "page" : undefined}
-            >
-              <span class="nav__menu-index">{String(i + 1).padStart(2, "0")}</span>
-              <span class="nav__menu-copy">
-                <span class="nav__menu-title">{study.data.title}</span>
-                <span class="nav__menu-meta">{study.data.company}</span>
-              </span>
-            </a>
-          );
-        })}
-      </div>
-    </li>
-    {links.map((l) => (
-      <li>
-        <a href={url(l.href)} aria-current={isCurrent(l.href) ? "page" : undefined}>{l.label}</a>
+        <div class="nav__menu" id="work-menu" data-work-menu role="menu" aria-label="Case studies">
+          <a
+            class="nav__menu-link nav__menu-link--index"
+            href={url("/work")}
+            role="menuitem"
+            aria-current={rawPath === workRoot ? "page" : undefined}
+          >
+            All work
+          </a>
+          {professional.map((study, i) => {
+            const href = `/work/${study.id}`;
+            return (
+              <a
+                class="nav__menu-link"
+                href={url(href)}
+                role="menuitem"
+                aria-current={isCurrent(href) ? "page" : undefined}
+              >
+                <span class="nav__menu-index">{String(i + 1).padStart(2, "0")}</span>
+                <span class="nav__menu-copy">
+                  <span class="nav__menu-title">{study.data.title}</span>
+                  <span class="nav__menu-meta">{study.data.company}</span>
+                </span>
+              </a>
+            );
+          })}
+        </div>
       </li>
-    ))}
-  </ul>
+      {links.map((l) => (
+        <li>
+          <a href={url(l.href)} aria-current={isCurrent(l.href) ? "page" : undefined}>{l.label}</a>
+        </li>
+      ))}
+    </ul>
+    <SocialLinks />
+  </div>
 </nav>
 
 <script>
@@ -150,6 +154,11 @@ function isCurrent(href) {
     z-index: 20;
   }
   .nav__mark { font-size: var(--type-small); font-weight: 500; }
+  .nav__end {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
   .nav__links {
     display: flex;
     align-items: center;
@@ -275,6 +284,11 @@ function isCurrent(href) {
     }
   }
   @media (max-width: 480px) {
+    .nav {
+      flex-wrap: wrap;
+      row-gap: var(--space-sm);
+    }
     .nav__links { gap: var(--space-md); }
+    .nav__end { margin-inline-start: auto; }
   }
 </style>
