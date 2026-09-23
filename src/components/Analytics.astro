@@ -44,6 +44,16 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
             p.crossOrigin = "anonymous";
             p.async = !0;
             p.src = s.api_host + "/static/array.js";
+            p.onerror = function () {
+              if (p.dataset.fallback === "1") return;
+              var fb = t.createElement("script");
+              fb.type = "text/javascript";
+              fb.async = !0;
+              fb.crossOrigin = "anonymous";
+              fb.dataset.fallback = "1";
+              fb.src = "https://us-assets.i.posthog.com/static/array.js";
+              r.parentNode.insertBefore(fb, r);
+            };
             (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r);
             var u = e;
             void 0 !== a ? (u = e[a] = []) : (a = "posthog");
@@ -63,23 +73,6 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
           }), (e.__SV = 1));
         }(document, window.posthog || []);
 
-        posthog.init(key, {
-          api_host: host,
-          ui_host: "https://us.posthog.com",
-          defaults: "2026-05-30",
-          person_profiles: "identified_only",
-          capture_pageview: true,
-          capture_pageleave: true,
-          capture_heatmaps: true,
-          autocapture: true,
-          persistence: "localStorage+cookie",
-          respect_dnt: true,
-          session_recording: { maskAllInputs: true },
-          loaded: function (ph) {
-            wire(ph);
-          },
-        });
-
         function pageKind() {
           var path = location.pathname.replace(/\/+$/, "") || "/";
           if (path === "/") return "home";
@@ -91,42 +84,70 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
           return "page";
         }
 
+        function normalizedPath() {
+          return location.pathname.replace(/\/+$/, "") || "/";
+        }
+
+        posthog.init(key, {
+          api_host: host,
+          ui_host: "https://us.posthog.com",
+          defaults: "2026-05-30",
+          person_profiles: "identified_only",
+          // history_change records the initial load and later pushState/replaceState
+          // navigations. `true` would override the 2026-05-30 default and miss
+          // Astro view transitions if they are turned on.
+          capture_pageview: "history_change",
+          capture_pageleave: true,
+          capture_heatmaps: true,
+          autocapture: true,
+          persistence: "localStorage+cookie",
+          respect_dnt: true,
+          session_recording: { maskAllInputs: true },
+          before_send: function (event) {
+            if (!event) return event;
+            var props = event.properties || (event.properties = {});
+            props.site = "tomas-stonehouse";
+            props.page_kind = pageKind();
+            props.path = normalizedPath();
+            return event;
+          },
+          loaded: function (ph) {
+            wire(ph);
+          },
+        });
+
         function wire(ph) {
-          var kind = pageKind();
-          ph.register({ site: "tomas-stonehouse", page_kind: kind });
-
-          if (kind === "case_study") {
-            ph.capture("case_study_view", {
-              title: document.title,
-              path: location.pathname,
-            });
-          }
-
-          document.addEventListener("click", function (event) {
-            var el = event.target.closest("[data-ph]");
-            if (!el) return;
-            var props = {
-              href: el.getAttribute("href") || undefined,
-              page_kind: kind,
-            };
-            var attrs = el.attributes;
-            for (var i = 0; i < attrs.length; i++) {
-              var name = attrs[i].name;
-              if (name.indexOf("data-ph-") === 0) {
-                props[name.slice(8)] = attrs[i].value;
-              }
-            }
-            ph.capture(el.getAttribute("data-ph"), props);
-          });
-
+          var lastCasePath = "";
+          var lastPath = "";
           var marks = [25, 50, 75, 100];
           var seen = {};
           var ticking = false;
+          var listeners = false;
+
+          function syncPage() {
+            var kind = pageKind();
+            var path = normalizedPath();
+            ph.register({ site: "tomas-stonehouse", page_kind: kind, path: path });
+            if (kind === "case_study" && path !== lastCasePath) {
+              lastCasePath = path;
+              ph.capture("case_study_view", {
+                title: document.title,
+                path: path,
+              });
+            }
+            if (path === lastPath) return;
+            lastPath = path;
+            seen = {};
+            measure();
+          }
+
           function measure() {
             ticking = false;
             var max = document.documentElement.scrollHeight - window.innerHeight;
             if (max <= 0) return;
             var pct = Math.round((window.scrollY / max) * 100);
+            var kind = pageKind();
+            var path = normalizedPath();
             for (var i = 0; i < marks.length; i++) {
               var mark = marks[i];
               if (pct >= mark && !seen[mark]) {
@@ -134,22 +155,53 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
                 ph.capture("scroll_depth", {
                   percent: mark,
                   page_kind: kind,
-                  path: location.pathname,
+                  path: path,
                 });
               }
             }
           }
-          window.addEventListener(
-            "scroll",
-            function () {
-              if (!ticking) {
-                ticking = true;
-                requestAnimationFrame(measure);
+
+          syncPage();
+
+          if (!listeners) {
+            listeners = true;
+            document.addEventListener("click", function (event) {
+              var target = event.target;
+              if (!target || !target.closest) return;
+              var el = target.closest("[data-ph]");
+              if (!el) return;
+              var props = {
+                href: el.getAttribute("href") || undefined,
+                page_kind: pageKind(),
+                path: normalizedPath(),
+              };
+              var attrs = el.attributes;
+              for (var i = 0; i < attrs.length; i++) {
+                var name = attrs[i].name;
+                if (name.indexOf("data-ph-") === 0) {
+                  props[name.slice(8).replace(/-/g, "_")] = attrs[i].value;
+                }
               }
-            },
-            { passive: true },
-          );
-          measure();
+              // Same-tab navigations (resume PDF, mailto) unload before the
+              // default 3s batch flush. sendBeacon survives the unload.
+              ph.capture(el.getAttribute("data-ph"), props, { transport: "sendBeacon" });
+            });
+
+            window.addEventListener(
+              "scroll",
+              function () {
+                if (!ticking) {
+                  ticking = true;
+                  requestAnimationFrame(measure);
+                }
+              },
+              { passive: true },
+            );
+
+            document.addEventListener("astro:page-load", function () {
+              syncPage();
+            });
+          }
         }
       })();
     </script>

@@ -1,0 +1,50 @@
+---
+const { label, columns = [], rows = [] } = Astro.props;
+---
+<div class="sheet">
+  {label && <p class="eyebrow">{label}</p>}
+  <table>
+    <thead>
+      <tr>
+        {columns.map((column) => <th scope="col">{column}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          {row.map((cell) => <td>{cell}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .sheet { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .sheet table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .sheet th,
+  .sheet td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.7rem 0.85rem 0.7rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-family: var(--font-ui);
+    font-size: var(--type-small);
+    line-height: 1.45;
+    color: var(--ink-secondary);
+  }
+  .sheet th {
+    font-size: var(--type-caption);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .sheet td:first-child {
+    color: var(--ink-primary);
+    width: 28%;
+  }
+</style>

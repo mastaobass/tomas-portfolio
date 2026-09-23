@@ -15,9 +15,26 @@ const northwestern = await getStudies("northwestern");
     <p class="hero__sub">
       Senior Product Designer. Fraud, payments, and trust decision systems at Kount (Equifax). Review and policy surfaces used on more than a million transactions a day.
     </p>
+    <p class="hero__signal">
+      <a
+        href="https://mastaobass.github.io/trust-score-ds/console/"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ph="code_console"
+        data-ph-placement="hero"
+      >Live review console</a>
+      <span aria-hidden="true">·</span>
+      <a
+        href="https://github.com/mastaobass/trust-score-ds"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ph="code_github"
+        data-ph-placement="hero"
+      >GitHub</a>
+    </p>
   </header>
 
-  <WorkIndex label="Selected work" note="2019 — 2026" studies={professional} startIndex={1} />
+  <WorkIndex variant="cards" label="Selected work" note="2019 — 2026" studies={professional} startIndex={1} />
 
   <WorkIndex
     label="Graduate work — Northwestern MPD²"
@@ -28,16 +45,33 @@ const northwestern = await getStudies("northwestern");
 </Base>
 
 <style>
-  .hero { padding-block: var(--space-3xl) var(--space-section); }
+  .hero { padding-block: var(--space-2xl) var(--space-xl); }
   .hero__statement {
-    font-size: var(--type-display);
-    margin-block: var(--space-xl) var(--space-xl);
-    max-width: 26ch;
+    font-size: clamp(2.5rem, 1.2rem + 3vw, 3.75rem);
+    margin-block: var(--space-md) var(--space-md);
+    max-width: 22ch;
   }
   .hero__sub {
     font-size: var(--type-body-lg);
     line-height: 1.58;
     color: var(--ink-secondary);
-    max-width: 60ch;
+    max-width: 52ch;
+  }
+  .hero__signal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45em;
+    align-items: baseline;
+    margin-block-start: var(--space-lg);
+    font-size: var(--type-caption);
+    color: var(--ink-muted);
+  }
+  .hero__signal a {
+    color: var(--ink-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .hero__signal a:hover {
+    color: var(--ink-primary);
+    border-bottom-color: var(--ink-primary);
   }
 </style>

@@ -42,6 +42,7 @@ function isCurrent(href) {
             href={url("/work")}
             role="menuitem"
             aria-current={rawPath === workRoot ? "page" : undefined}
+            data-ph="work_index_open"
           >
             All work
           </a>
@@ -53,6 +54,9 @@ function isCurrent(href) {
                 href={url(href)}
                 role="menuitem"
                 aria-current={isCurrent(href) ? "page" : undefined}
+                data-ph="case_study_open"
+                data-ph-title={study.data.title}
+                data-ph-placement="nav"
               >
                 <span class="nav__menu-index">{String(i + 1).padStart(2, "0")}</span>
                 <span class="nav__menu-copy">

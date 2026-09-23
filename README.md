@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:4321/tomas-portfolio** (base path is required).
+Open **http://localhost:4321/** .
 
 ```bash
 npm run build    # static output in dist/
@@ -39,23 +39,21 @@ Create `src/content/case-studies/<slug>.mdx` with frontmatter (`title`, `outcome
 
 ## Analytics
 
-The site uses [PostHog](https://posthog.com), a free Heap-style product analytics tool: autocapture of clicks and pageviews, session replay, funnels, and named events for resume downloads, contact clicks, case study opens, and scroll depth.
+[PostHog](https://us.posthog.com) (US cloud) and GA4 both run on the marketing site. PostHog ingest is first-party via `https://e.tomas-stonehouse.com`, which CNAMEs to PostHog's managed proxy. The project API key is public. Override it with `PUBLIC_POSTHOG_KEY` / `PUBLIC_POSTHOG_HOST` / `PUBLIC_GA_ID` (see `.env.example`). GitHub Actions passes the same names from repository secrets when they are set. An empty secret keeps the fallback in `src/lib/analytics-config.js`.
 
-Free cloud plan is 1 million events and 5,000 session recordings per month. No credit card.
+Anonymous visitors are tracked with `person_profiles: "identified_only"`. Pageviews, autocapture, and the named events below still record. Person profiles are not created for people who never identify. Do Not Track is respected, so those browsers will not appear.
 
-1. Create an account at [us.posthog.com/signup](https://us.posthog.com/signup).
-2. Open **Project settings** and copy the **Project API Key** (starts with `phc_`).
-3. Paste it into `src/lib/analytics-config.js` as `POSTHOG_KEY`, then push to `main`.
-4. In PostHog, turn on **Session replay** and add `www.tomas-stonehouse.com` under authorized domains if that field is shown.
+Pageviews use `capture_pageview: "history_change"`, which covers full page loads and Astro client navigations. Every event gets `page_kind` (`home`, `work_index`, `case_study`, `about`, `contact`, `northwestern`) and a trailing-slash-normalized `path`, attached in `before_send` so the first pageview is included.
 
-Until a key is set, the analytics script is not included in the build.
+Named events:
 
-Named events already wired:
-
-- `case_study_open` / `case_study_view`
+- `case_study_open` / `case_study_view` / `work_index_open`
+- `code_console` / `code_github` / `code_storybook`
 - `resume_download`
 - `contact_email` / `contact_linkedin`
 - `scroll_depth` at 25 / 50 / 75 / 100
+
+Funnels to keep in PostHog: Landing (`path = /`) → Case (`case_study_view` or `page_kind = case_study`) → Contact (`page_kind = contact` or `contact_email`). Break case drop-off down by `path`.
 
 ## Deploy
 
