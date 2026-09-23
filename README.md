@@ -51,9 +51,30 @@ Named events:
 - `code_console` / `code_github` / `code_storybook`
 - `resume_download`
 - `contact_email` / `contact_linkedin`
+- `theme_toggle`
 - `scroll_depth` at 25 / 50 / 75 / 100
 
-Funnels to keep in PostHog: Landing (`path = /`) → Case (`case_study_view` or `page_kind = case_study`) → Contact (`page_kind = contact` or `contact_email`). Break case drop-off down by `path`.
+When a visit arrives with `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, or `ref`, those labels are kept for the browser tab (`sessionStorage`) and copied onto each PostHog event. Nothing here calls `identify()`.
+
+### Apply links
+
+Use one link per application. The visible text stays `www.tomas-stonehouse.com`. The href carries the campaign. Slug: lowercase letters, numbers, and hyphens, such as `acme-senior-pd-202609`.
+
+```html
+<a href="https://www.tomas-stonehouse.com/r/acme-senior-pd-202609">www.tomas-stonehouse.com</a>
+```
+
+That path stores `utm_campaign=acme-senior-pd-202609`, `utm_source=apply`, `utm_medium=email`, then opens `/` with a clean address bar. Add `?utm_source=` or `?utm_medium=` on the short link only when those defaults are wrong. Optional `ref` is another anonymous label in the same character set, not a name or an email.
+
+The same visit without the short path:
+
+```text
+https://www.tomas-stonehouse.com/?utm_source=apply&utm_medium=email&utm_campaign=acme-senior-pd-202609
+```
+
+In PostHog, break down or filter `$pageview`, `case_study_view`, `code_console`, `code_github`, `resume_download`, `contact_email`, and `theme_toggle` by `utm_campaign`. No events for that campaign after you send the application means the site was not opened. Pageviews and case views, then a rejection, means they looked at the work. A `contact_email` on that campaign means the portfolio produced a reply.
+
+Funnels to keep in PostHog: Landing (`path = /`) → Case (`case_study_view` or `page_kind = case_study`) → Contact (`page_kind = contact` or `contact_email`). Break case drop-off down by `path`, and application traffic down by `utm_campaign`.
 
 ## Deploy
 

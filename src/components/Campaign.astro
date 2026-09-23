@@ -1,0 +1,82 @@
+---
+import { url } from "../lib/path.js";
+
+const home = url("/");
+const base = import.meta.env.BASE_URL;
+---
+<!--
+  Anonymous campaign labels for one browser tab. A saved session wins until
+  a new URL brings its own utm_* or ref. /r/<slug> is not a real page: the
+  static host serves 404.html, this script stores the slug, and the address
+  bar becomes home. No identify(), no IP, no person profile.
+-->
+<script is:inline define:vars={{ home, base }}>
+  (function () {
+    var KEY = "campaign";
+    var FIELDS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "ref"];
+
+    function clean(value) {
+      if (value == null) return "";
+      var text = String(value).trim();
+      if (!/^[A-Za-z0-9._~-]{1,80}$/.test(text)) return "";
+      return text;
+    }
+
+    function currentPath() {
+      var path = location.pathname || "/";
+      var prefix = String(base || "/").replace(/\/+$/, "");
+      if (prefix && (path === prefix || path.indexOf(prefix + "/") === 0)) {
+        path = path.slice(prefix.length) || "/";
+      }
+      return path.replace(/\/+$/, "") || "/";
+    }
+
+    function write(props) {
+      var stored = {};
+      for (var i = 0; i < FIELDS.length; i++) {
+        var key = FIELDS[i];
+        if (props[key]) stored[key] = props[key];
+      }
+      try {
+        sessionStorage.setItem(KEY, JSON.stringify(stored));
+      } catch (e) {}
+    }
+
+    function fromSearch() {
+      var params = new URLSearchParams(location.search);
+      var found = {};
+      var any = false;
+      for (var i = 0; i < FIELDS.length; i++) {
+        var key = FIELDS[i];
+        var value = clean(params.get(key));
+        if (!value) continue;
+        found[key] = value;
+        any = true;
+      }
+      if (any) write(found);
+    }
+
+    var hop = currentPath().match(/^\/r\/([A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)$/);
+    if (hop && hop[1].length <= 80) {
+      var params = new URLSearchParams(location.search);
+      var slug = hop[1].toLowerCase();
+      var campaign = {
+        utm_source: clean(params.get("utm_source")) || "apply",
+        utm_medium: clean(params.get("utm_medium")) || "email",
+        utm_campaign: slug,
+      };
+      var content = clean(params.get("utm_content"));
+      var term = clean(params.get("utm_term"));
+      var ref = clean(params.get("ref"));
+      if (content) campaign.utm_content = content;
+      if (term) campaign.utm_term = term;
+      if (ref) campaign.ref = ref;
+      write(campaign);
+      document.documentElement.style.visibility = "hidden";
+      location.replace(home);
+      return;
+    }
+
+    fromSearch();
+  })();
+</script>

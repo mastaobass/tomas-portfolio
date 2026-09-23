@@ -22,12 +22,13 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
 {key ? (
   <>
     <link rel="preconnect" href={host} crossorigin />
-    <script is:inline id="ph-boot" data-ph-key={key} data-ph-host={host}>
+    <script is:inline id="ph-boot" data-ph-key={key} data-ph-host={host} data-ph-base={import.meta.env.BASE_URL}>
       (function () {
         var boot = document.currentScript || document.getElementById("ph-boot");
         var key = boot && boot.getAttribute("data-ph-key");
         var host =
           (boot && boot.getAttribute("data-ph-host")) || "https://us.i.posthog.com";
+        var base = (boot && boot.getAttribute("data-ph-base")) || "/";
         if (!key) return;
 
         !function (t, e) {
@@ -85,7 +86,36 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
         }
 
         function normalizedPath() {
-          return location.pathname.replace(/\/+$/, "") || "/";
+          var path = location.pathname || "/";
+          var prefix = String(base || "/").replace(/\/+$/, "");
+          if (prefix && (path === prefix || path.indexOf(prefix + "/") === 0)) {
+            path = path.slice(prefix.length) || "/";
+          }
+          return path.replace(/\/+$/, "") || "/";
+        }
+
+        // Same allowlist as src/components/Campaign.astro. Event properties only.
+        function campaignProps() {
+          try {
+            var raw = sessionStorage.getItem("campaign");
+            if (!raw) return {};
+            var parsed = JSON.parse(raw);
+            if (!parsed || typeof parsed !== "object") return {};
+            var fields = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "ref"];
+            var out = {};
+            for (var i = 0; i < fields.length; i++) {
+              var name = fields[i];
+              var value = parsed[name];
+              if (typeof value === "string" && /^[A-Za-z0-9._~-]{1,80}$/.test(value)) out[name] = value;
+            }
+            return out;
+          } catch (e) {
+            return {};
+          }
+        }
+
+        function isApplyHop() {
+          return /^\/r\/[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(normalizedPath());
         }
 
         posthog.init(key, {
@@ -105,10 +135,14 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
           session_recording: { maskAllInputs: true },
           before_send: function (event) {
             if (!event) return event;
+            // The short link is a redirect hop. The home pageview is the visit.
+            if (isApplyHop()) return null;
             var props = event.properties || (event.properties = {});
             props.site = "tomas-stonehouse";
             props.page_kind = pageKind();
             props.path = normalizedPath();
+            var campaign = campaignProps();
+            for (var name in campaign) props[name] = campaign[name];
             return event;
           },
           loaded: function (ph) {
