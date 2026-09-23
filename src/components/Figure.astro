@@ -61,7 +61,8 @@ const isAsset = typeof src === "object" && src !== null && "width" in src;
     display: block;
   }
   .figure--framed .figure__img {
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--frame-border);
+    box-shadow: var(--frame-shadow);
     background: var(--surface-raised);
   }
   .figure__placeholder {

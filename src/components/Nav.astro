@@ -2,6 +2,7 @@
 import { url } from "../lib/path.js";
 import { getStudies } from "../lib/studies.js";
 import SocialLinks from "./SocialLinks.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 
 const professional = await getStudies("professional");
 
@@ -74,6 +75,7 @@ function isCurrent(href) {
         </li>
       ))}
     </ul>
+    <ThemeToggle />
     <SocialLinks />
   </div>
 </nav>
@@ -222,7 +224,7 @@ function isCurrent(href) {
     background: var(--surface-page);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    box-shadow: 0 12px 32px rgba(22, 21, 15, 0.08);
+    box-shadow: var(--shadow-overlay);
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
