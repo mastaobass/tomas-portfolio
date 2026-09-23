@@ -9,8 +9,10 @@ const caseStudies = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/case-studies" }),
   schema: z.object({
     title: z.string(),
-    // The one-sentence outcome. Shown on the work index AND the case hero.
+    // The one-sentence outcome. Shown on the case hero.
     outcome: z.string(),
+    // Short line for homepage and work-index cards. Falls back to outcome.
+    lede: z.string().optional(),
     company: z.string(),
     role: z.string(),
     team: z.string().optional(),

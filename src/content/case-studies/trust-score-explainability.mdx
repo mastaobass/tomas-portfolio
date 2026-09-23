@@ -1,5 +1,6 @@
 ---
 title: Trust score explainability
+lede: A score a reviewer can defend, not a number they have to take on faith.
 outcome: Rebuilt the score as an argument a reviewer can defend, not a number they have to take on faith. Analysts were approving and declining more than a million transactions a day on a score they could not explain.
 company: Kount, an Equifax company
 role: Lead product designer
@@ -22,28 +23,31 @@ code:
 
 import Figure from "../../components/Figure.astro";
 import PullQuote from "../../components/PullQuote.astro";
+import DataTable from "../../components/DataTable.astro";
 import researchImage from "../../assets/research-trust-image.png";
 import baselineImage from "../../assets/trust-score-baseline.jpg";
-import heroImage from "../../assets/trust-score-hero.png";
 import reasonCodesImage from "../../assets/reason-codes.png";
-import queueImage from "../../assets/trust-score-queue.png";
 import reconstructedModal from "../../assets/trust-score-reconstructed-modal.png";
 
-## Context
+## Constraint
 
-Kount scores over a million transactions a day. An analyst sees a number between 0 and 99.9 and decides: approve, hold, or decline. The score was accurate. It was also opaque.
-
-When a merchant challenged a decline, the analyst had no answer beyond the number itself. Disputes escalated to engineering. Analysts hedged toward manual review — the slowest and most expensive path — because review felt safer than a decision they could not defend.
+Kount scores over a million transactions a day. An analyst sees a number between 0 and 99.9 and decides: approve, hold, or decline. The score was accurate. It was also opaque. When a merchant challenged a decline, the answer was the number. Disputes escalated to engineering. Manual review felt safer than a decision they could not defend.
 
 <PullQuote attribution="Fraud analyst, internal interview">
   “I trust the model. I just can’t tell a merchant why we blocked their best customer.”
 </PullQuote>
 
-Two constraints shaped everything. The score comes from a proprietary model, so we could surface contributing factors but not expose weights that would let fraudsters reverse-engineer it. And reason codes were pre-scripted — chosen ahead of time by the risk team, not generated per transaction.
+Two limits were fixed from the start. The model is proprietary, so contributing factors could surface and weights could not. Reason codes were pre-scripted by the risk team, not generated per transaction. The design problem was how to make that limited set feel sufficient for a decision an analyst has to defend.
 
-## Process
-
-The design problem was not how much we could reveal. It was how to make a limited, pre-scripted set of reasons feel sufficient for a decision an analyst has to defend.
+<DataTable
+  label="What one screen has to answer"
+  columns={["Question", "Surface"]}
+  rows={[
+    ["What is the score?", "The number and its band, on the same screen as the decision."],
+    ["How was it built?", "A waterfall that starts from a stable visual baseline."],
+    ["What drove it?", "Active and inactive reason codes, side by side."],
+  ]}
+/>
 
 <Figure
   src={researchImage}
@@ -52,11 +56,15 @@ The design problem was not how much we could reveal. It was how to make a limite
   caption="Queue observation notes. Analysts re-derived the same four questions on every transaction."
 />
 
-The model is proprietary, so weights were never going to be visible. That constraint was understood from the start. Data Science controlled which reason codes could surface and how many.
+## Decisive moves
 
-Two questions kept recurring in queue observation: how was this score built, and what specifically drove it. The version that worked separated those questions. Composition became a waterfall. Drivers became a two-column list of active and inactive reason codes.
+### Separate composition from drivers
 
-The hardest detail was the baseline. Mathematically the score often started somewhere in the 70s and the starting point shifted with every transaction. A waterfall only reads as an argument if it begins from a stable number. We pinned the visual baseline at 80.0 so the movements up and down stayed consistent and legible, even though the underlying math was more fluid. That single decision made the rest of the interface coherent.
+Queue observation kept returning two questions: how the score was built, and what specifically drove it. Composition became the waterfall. Drivers became a two-column list, increased and decreased. Data Science controlled which reason codes could surface and how many.
+
+### Pin the visual baseline
+
+The mathematical start often sat in the 70s and shifted with every transaction. A waterfall only reads as an argument if it begins from a stable number. We pinned the visual baseline at 80.0 so the movements stayed legible. The underlying math stayed more fluid. That decision made the rest of the interface coherent.
 
 <Figure
   src={baselineImage}
@@ -66,19 +74,9 @@ The hardest detail was the baseline. Mathematically the score often started some
   ratio="16 / 9"
 />
 
-## Solution
+### Keep absence visible
 
-The review modal answers three questions on one screen: what the score is, how it was built, and what drove it.
-
-<Figure
-  src={heroImage}
-  alt="Transaction Trust Score modal showing score 85.6, waterfall chart of contributing factors, and two-column reason codes"
-  label="Final screen"
-  caption="The trust score explainer. Score bands render at equal width even though their ranges are unequal. Kount's published threshold guidance puts roughly 5% of volume below 61, so the vast majority of traffic sits in the top bands — proportional widths would compress the range where nearly every real decision happens."
-  ratio="16 / 10"
-/>
-
-The waterfall starts at the 80.0 baseline and shows eight signal categories moving the score up or down. Reason codes sit below in two columns — increased and decreased — with inactive codes dimmed rather than hidden, so analysts learn the full vocabulary and can see what did not fire.
+Inactive reason codes stay on the screen, dimmed rather than hidden, so analysts learn the full vocabulary and can see what did not fire. A feedback control in the footer flags explanations that do not hold up. That routes to the risk team as reason-code tuning, not a dead end.
 
 <Figure
   src={reasonCodesImage}
@@ -88,18 +86,9 @@ The waterfall starts at the 80.0 baseline and shows eight signal categories movi
   ratio="16 / 8"
 />
 
-A feedback control in the footer closes the loop: analysts flag explanations that do not hold up, which routes back to the risk team as reason-code tuning input rather than disappearing.
-
 ## In code
 
-The original Figma file is Equifax IP. The public kit is the same product slice rebuilt: a ten-row review queue that opens the Payments Fraud case. The score explainer lives on that case, not on the table. The constraints did not change. Weights stay hidden. Reasons are pre-scripted. The visual baseline is pinned at 80.0.
-
-<Figure
-  src={queueImage}
-  alt="Reconstructed payment review queue with ten transactions, trust scores, and decision statuses"
-  label="Reconstruction — review queue"
-  caption="Ten reconstructed payments. Open a row to work the payments-fraud case. This is the surface analysts lived in, not a component gallery."
-/>
+The original Figma file is Equifax IP. The public kit is the same slice rebuilt: a ten-row review queue that opens the Payments Fraud case. The explainer lives on that case. Weights stay hidden. Reasons stay pre-scripted. The visual baseline stays pinned at 80.0. Approve, hold, and decline write back to the queue. The score itself does not change.
 
 <Figure
   src={reconstructedModal}
@@ -108,4 +97,4 @@ The original Figma file is Equifax IP. The public kit is the same product slice 
   caption="The same modal, now a React composition. Approve, hold, and decline write back to the queue. Feedback routes to reason-code tuning. The score itself does not change."
 />
 
-Open Northwind or Harbor in the [live console](https://mastaobass.github.io/trust-score-ds/console/). Source is on [GitHub](https://github.com/mastaobass/trust-score-ds). The component kit is still in [Storybook](https://mastaobass.github.io/trust-score-ds/?path=/story/compositions-casedetail--northwind).
+Open Northwind or Harbor in the <a href="https://mastaobass.github.io/trust-score-ds/console/" target="_blank" rel="noopener noreferrer" data-ph="code_console" data-ph-placement="case">live console</a>. Source is on <a href="https://github.com/mastaobass/trust-score-ds" target="_blank" rel="noopener noreferrer" data-ph="code_github" data-ph-placement="case">GitHub</a>. The component kit is still in <a href="https://mastaobass.github.io/trust-score-ds/?path=/story/compositions-casedetail--northwind" target="_blank" rel="noopener noreferrer" data-ph="code_storybook" data-ph-placement="case">Storybook</a>.

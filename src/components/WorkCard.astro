@@ -1,0 +1,86 @@
+---
+import { Image } from "astro:assets";
+import { url } from "../lib/path.js";
+
+const { index, title, lede, company, year, href, thumb, priority = false } = Astro.props;
+---
+<li class="card">
+  <a
+    class="card__link"
+    href={url(href)}
+    data-ph="case_study_open"
+    data-ph-title={title}
+    data-ph-placement="work_card"
+  >
+    <span class="card__frame">
+      <Image
+        src={thumb}
+        alt=""
+        widths={[480, 720, 960]}
+        sizes="(max-width: 959px) 100vw, 360px"
+        loading={priority ? "eager" : "lazy"}
+        fetchpriority={priority ? "high" : "auto"}
+        class="card__img"
+      />
+    </span>
+    <span class="card__copy">
+      <span class="card__title display">{title}</span>
+      <span class="card__lede">{lede}</span>
+      <span class="card__meta">{String(index).padStart(2, "0")} · {company} · {year}</span>
+    </span>
+  </a>
+</li>
+
+<style>
+  .card { list-style: none; margin: 0; }
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    height: 100%;
+  }
+  .card__frame {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--frame-border);
+    box-shadow: var(--frame-shadow);
+    background: var(--surface-raised);
+  }
+  .card__frame :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: top center;
+  }
+  .card__copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .card__title {
+    font-size: var(--type-h3);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+  .card__lede {
+    color: var(--ink-secondary);
+    font-size: var(--type-small);
+    line-height: 1.45;
+  }
+  .card__meta {
+    margin-block-start: var(--space-2xs);
+    font-size: var(--type-caption);
+    color: var(--ink-muted);
+    line-height: 1.4;
+  }
+  .card__link:hover .card__title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+</style>

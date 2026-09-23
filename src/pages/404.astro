@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import { url } from "../lib/path.js";
+---
+<Base title="Not found" description="This page is not on the site." noindex>
+  <header class="miss shell">
+    <p class="eyebrow">404</p>
+    <h1 class="display">This page is not on the site.</h1>
+    <p><a href={url("/")}>Back home</a></p>
+  </header>
+</Base>
+
+<style>
+  .miss { padding-block: var(--space-3xl); }
+  .miss h1 {
+    font-size: var(--type-h2);
+    margin-block: var(--space-md) var(--space-lg);
+    max-width: 16ch;
+  }
+  .miss a {
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent-subtle);
+  }
+  .miss a:hover { border-bottom-color: var(--accent); }
+</style>

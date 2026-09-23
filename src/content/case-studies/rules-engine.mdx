@@ -1,5 +1,6 @@
 ---
 title: Rules engine
+lede: Write, segment, and stage fraud policy without treating every change as a production risk.
 outcome: 41.5% adoption of the new policy model and 64.5% task completion for new policies, while platform volume crossed a million transactions a day. Rebuilt Policy Management across three phases so fraud teams could write, segment, and stage rules without treating every change as a production risk.
 company: Kount, an Equifax company
 role: Lead product designer
@@ -17,93 +18,60 @@ metrics:
   - value: "64.5%"
     label: task completion for new policies
 impactNotes:
-  - "Platform volume moved from roughly 100,000 transactions a day to over a million during this work. OR logic and the segment model cut the steps required to create a rule. Adoption and task completion are from internal measurement after Version 3. Users still called parts of the surface clunky where scope was cut. Stated plainly because the alternative is a cleaner story than the one I lived."
+  - "Platform volume moved from roughly 100,000 transactions a day to over a million during this work. Adoption and task completion are from internal measurement after Version 3. Users still called parts of the surface clunky where scope was cut. Stated plainly because the alternative is a cleaner story than the one I lived."
 next: trust-score-explainability
 ---
 
 import Figure from "../../components/Figure.astro";
+import Flow from "../../components/Flow.astro";
+import DataTable from "../../components/DataTable.astro";
 import paperWireframes from "../../assets/rules-paper-wireframes.png";
-import segmentEditor from "../../assets/rules-segment-editor.png";
-import setsStaging from "../../assets/rules-sets-staging.png";
 
-## Context
+## Constraint
 
-Policy Management is where risk appetite becomes executable rules. Analysts decide who to block, who to allow, and under what conditions. On a platform that grew past a million transactions a day, a slow or illegible rules surface is not a convenience problem. It is a production risk.
+A bad policy publishes into live traffic. The problem is not fewer form fields. It is boolean logic an analyst can re-read, plus a path to change policy without betting the day on a single publish.
 
-I was the lead designer on this surface for four years, across a cloud migration and six different product leads. The work shipped in three phases rather than one rewrite. Each phase answered a different failure mode of the last.
+I was the lead designer on this surface for four years, across a cloud migration and six product leads. It shipped in three phases. Each phase answered a failure mode of the last. Features that made rules easier to write but harder to stage were incomplete.
 
-## The constraint
+## Decisive moves
 
-A bad policy publishes into live traffic. The design problem is not fewer form fields. It is legibility of boolean logic plus a path to change policy without betting the day on a single publish.
+### Make OR legible
 
-That constraint shaped every phase. Features that made rules easier to write but harder to stage were incomplete. Features that added control but buried the logic failed the people who had to defend a decision later.
+Rule managers could only combine conditions with AND. Common policies became workarounds that were hard to defend later. I started on paper so engineering and product could see how OR changes IF and ELSE before anyone committed a screen.
 
-## Phase 1 — OR logic and a readable structure
-
-Kount Command was moving to the cloud as Kount One. Rule managers could only combine conditions with AND. Expressing common policies meant awkward workarounds and rules that were hard to read after the fact.
-
-I started on paper. The goal was to understand how OR changes the evaluation of IF and ELSE before anyone committed a screen. Engineering and product sat with those sketches so the requirements and the evaluation model stayed aligned.
+What shipped was a file-management model. Sets held the slices of traffic. Policies under them could use AND or OR. Scheduling landed in the same pass, so a change could be planned instead of forced live.
 
 <Figure
   src={paperWireframes}
   alt="Hand-drawn paper wireframes exploring OR logic and nested policy structure"
   label="Paper wireframes"
-  caption="Early structure work for OR logic and nested policy organization. The evaluation model had to be right before the UI was worth polishing."
+  caption="Early structure work for OR logic. The evaluation model had to be right before the UI was worth polishing."
   ratio="3 / 4"
 />
 
-What shipped was a file-management style model: policy sets held triggers that sliced traffic, and under each trigger sat policies with conditions that could use AND or OR. Sets could be activated so different policy collections ran for different situations. Scheduling landed in the same pass so changes could be planned instead of forced live.
+### Replace triggers with segments
 
-Feedback on Version 1 was mixed in a useful way. OR logic reduced complexity. Triggers were still confusing. People could write more, but they could not always say what would fire.
+The next failure was scale of a different kind. Policy Management had to serve multiple event types, and two policy engines had to become one: Login, New Account Opening, and Payments Fraud on one configuration surface.
 
-## Phase 2 — Multi-event and segments
+Triggers were renamed segments. A segment is a named slice of traffic for an event type, with its own linked policies. You define who falls into it and what runs when they do. Policy sets left in this phase, and scheduling got harder without them. Analyst sessions, heatmaps on rule-creation drop-off, and several editor directions followed. Pure drag-and-drop lost to a hybrid that kept power without forcing everyone into a syntax surface.
 
-The next problem was scale of a different kind. Policy Management had to serve multiple event types in one experience, and two policy engines had to become one. The question was not only how to process payments. It was how Login, New Account Opening, and Payments Fraud could share a coherent configuration surface.
+### Stage, then publish
 
-Triggers were renamed segments. A segment is a named slice of traffic for an event type, with its own linked policies. The mental model tightened: you are not hunting for a hidden trigger the system fires for reasons no one can explain. You are defining who falls into a segment and what policies run when they do.
+Sets came back with a clearer job. A set is a collection of segments and policies for an event type. Only one set is active per event type. Edits do not go live on save. They land as pending changes, can be compared to the published version, and publish only when someone confirms. Historical versions stay readable and locked. Restore is explicit.
 
-Policy sets were removed in this phase. Segments and policies absorbed more of the structure. Scheduling got harder without sets. Research included sessions with analysts, heatmaps on rule-creation drop-off, and several editor directions. We tested pure drag-and-drop against a more code-like editor and landed on a hybrid that kept power without forcing everyone into a syntax surface.
-
-<Figure
-  src={segmentEditor}
-  alt="Segment editor in Kount 360 Policy Management showing conditions, tags, and linked segments"
-  label="Segment and policy editor"
-  caption="Segments group traffic. Policies attach conditions and outcomes. The surface has to make both readable in the same place."
-  ratio="16 / 9"
+<Flow
+  label="Publish path"
+  steps={["Segment traffic", "Attach policies", "Stage as pending", "Compare to published", "Publish"]}
 />
 
-Version 2 feedback praised segments for clarifying what used to be triggers. Scheduling and controlled rollout were the open wound.
-
-## Phase 3 — Versioning and staging
-
-Sets came back with a clearer job. A set is a collection of segments and policies for an event type. Only one set is active per event type. Edits do not go live on save. They land as pending changes, can be compared to the published version, and publish only when someone confirms.
-
-Historical versions stay readable and locked. Restore is explicit. That is the path to change policy without treating every edit as a production event.
-
-<Figure
-  src={setsStaging}
-  alt="Policy Management set views showing the active set, pending changes, and publish path"
-  label="Sets and staging"
-  caption="Active set, pending changes, and a publish path. Staging is the difference between configuration and a leap of faith."
-  ratio="16 / 10"
+<DataTable
+  label="Policy states"
+  columns={["State", "What the analyst sees"]}
+  rows={[
+    ["Active set", "The published collection for that event type. Only one is live."],
+    ["Pending changes", "Edits held off traffic until someone compares and publishes."],
+    ["Version history", "Prior publishes, readable and locked. Restore is explicit."],
+  ]}
 />
 
-Public product language on Kount's support site matches this model: sets, segments, policies, pending changes, and version history. The design work was making that hierarchy legible in the console, not inventing a parallel vocabulary.
-
-## What we kept and what we cut
-
-Segments stayed. They made targeting readable. OR logic stayed. It cut the gymnastics required for common policies. Versioning and pending publish stayed once they arrived, because staging turned out to be non-negotiable at volume.
-
-Policy sets left in Phase 2 and returned in Phase 3 with a different purpose: staging and controlled activation, not a second place to hide logic. Triggers as a label did not survive. If analysts could not say what fired and why, the name was wrong.
-
-I had designed pieces of this surface earlier in the Kount 360 lifecycle. Deciding which of my own prior decisions still held was part of the job.
-
-## Evidence
-
-What I can stand behind: platform volume moved from roughly 100,000 transactions a day to over a million during this work. After Version 3, adoption of the new model sat at 41.5 percent, and task completion for new policies at 64.5 percent. Analyst language shifted from triggers being confusing to segments clarifying what fired.
-
-Users still noted a clunky feel where scope was cut. That is part of the result, not a footnote to hide.
-
-## Close
-
-What shipped across three phases was a Policy Management surface fraud teams could write against and stage against while the platform crossed a million transactions a day. The product did not invent rules. It made complex boolean policy legible enough that the people who own fraud outcomes could change it without treating every publish as a leap of faith.
+Segments stayed. OR logic stayed. Triggers as a label did not: if analysts could not say what fired, the name was wrong. I had designed pieces of this surface earlier. Deciding which of those decisions still held was part of the job. Public product language on Kount's support site matches the model that shipped: sets, segments, policies, pending changes, and version history.

@@ -2,6 +2,7 @@
 import { url } from "../lib/path.js";
 import { getStudies } from "../lib/studies.js";
 import SocialLinks from "./SocialLinks.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 
 const professional = await getStudies("professional");
 
@@ -42,6 +43,7 @@ function isCurrent(href) {
             href={url("/work")}
             role="menuitem"
             aria-current={rawPath === workRoot ? "page" : undefined}
+            data-ph="work_index_open"
           >
             All work
           </a>
@@ -53,6 +55,9 @@ function isCurrent(href) {
                 href={url(href)}
                 role="menuitem"
                 aria-current={isCurrent(href) ? "page" : undefined}
+                data-ph="case_study_open"
+                data-ph-title={study.data.title}
+                data-ph-placement="nav"
               >
                 <span class="nav__menu-index">{String(i + 1).padStart(2, "0")}</span>
                 <span class="nav__menu-copy">
@@ -70,6 +75,7 @@ function isCurrent(href) {
         </li>
       ))}
     </ul>
+    <ThemeToggle />
     <SocialLinks />
   </div>
 </nav>
@@ -218,7 +224,7 @@ function isCurrent(href) {
     background: var(--surface-page);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    box-shadow: 0 12px 32px rgba(22, 21, 15, 0.08);
+    box-shadow: var(--shadow-overlay);
     visibility: hidden;
     opacity: 0;
     pointer-events: none;

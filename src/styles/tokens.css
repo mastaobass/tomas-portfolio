@@ -1,20 +1,76 @@
-/* Generated from src/tokens/tokens.json — mirrors the Figma "Portfolio Tokens" collection. */
+/* Color pairs live in src/tokens/tokens.json.
+   Light is the default. Dark follows prefers-color-scheme unless
+   html[data-theme] is set by the theme script. */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --ink-primary: #14171c;
+  --ink-secondary: #3a4250;
+  --ink-muted: #5c6573; /* 5.44:1 on page, 4.92:1 on raised */
+  --ink-inverse: #f4f6f8;
+
+  --surface-page: #f4f6f8;
+  --surface-raised: #e7ebf0;
+  --surface-inverse: #14171c;
+
+  --accent: #1c4e8c;
+  --accent-subtle: #e3ebf5;
+
+  --border-subtle: #d5dbe3;
+  --border-strong: #14171c;
+  --frame-border: #c5ced8;
+  --frame-shadow: 0 1px 2px rgba(20, 23, 28, 0.06);
+  --shadow-overlay: 0 12px 32px rgba(20, 23, 28, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --ink-primary: #f3f5f8;
+    --ink-secondary: #c5ced8;
+    --ink-muted: #9aa6b5; /* 7.27:1 on page */
+    --ink-inverse: #14171c;
+
+    --surface-page: #14171c;
+    --surface-raised: #1c2129;
+    --surface-inverse: #f3f5f8;
+
+    --accent: #a9c3e4;
+    --accent-subtle: #243044;
+
+    --border-subtle: #2e3642;
+    --border-strong: #f3f5f8;
+    --frame-border: #5c6778;
+    --frame-shadow: 0 0 0 1px rgba(243, 245, 248, 0.08);
+    --shadow-overlay: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ink-primary: #f3f5f8;
+  --ink-secondary: #c5ced8;
+  --ink-muted: #9aa6b5;
+  --ink-inverse: #14171c;
+
+  --surface-page: #14171c;
+  --surface-raised: #1c2129;
+  --surface-inverse: #f3f5f8;
+
+  --accent: #a9c3e4;
+  --accent-subtle: #243044;
+
+  --border-subtle: #2e3642;
+  --border-strong: #f3f5f8;
+  --frame-border: #5c6778;
+  --frame-shadow: 0 0 0 1px rgba(243, 245, 248, 0.08);
+  --shadow-overlay: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
 :root {
-  --ink-primary: #16150f;
-  --ink-secondary: #4b4a42;
-  --ink-muted: #75736a; /* darkened from #8A887E to reach 4.56:1 on page bg (WCAG AA) */
-  --ink-inverse: #fbfaf7;
-
-  --surface-page: #fbfaf7;
-  --surface-raised: #f2f0ea;
-  --surface-inverse: #16150f;
-
-  --accent: #2f5d57;
-  --accent-subtle: #e8efed;
-
-  --border-subtle: #e2dfd6;
-  --border-strong: #16150f;
-
   --font-display: "Newsreader Variable", Georgia, serif;
   --font-ui: "Inter Variable", system-ui, -apple-system, sans-serif;
 

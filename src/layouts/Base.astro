@@ -3,12 +3,20 @@ import "../styles/global.css";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import Analytics from "../components/Analytics.astro";
+import Campaign from "../components/Campaign.astro";
+import ThemeScript from "../components/ThemeScript.astro";
 import { url } from "../lib/path.js";
-const { title, description = "Senior Product Designer working on risk, decision, and data-dense systems." } = Astro.props;
+const {
+  title,
+  description = "Senior Product Designer working on risk, decision, and data-dense systems.",
+  noindex = false,
+} = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
   <head>
+    <ThemeScript />
+    <Campaign />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title ? `${title} — Tomás Stonehouse` : "Tomás Stonehouse — Senior Product Designer"}</title>
@@ -16,6 +24,7 @@ const { title, description = "Senior Product Designer working on risk, decision,
     <meta property="og:title" content={title ?? "Tomás Stonehouse"} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    {noindex ? <meta name="robots" content="noindex" /> : null}
     <link rel="icon" type="image/svg+xml" href={url("/favicon.svg")} />
     <Analytics />
   </head>
