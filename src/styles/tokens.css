@@ -48,4 +48,27 @@
   --layout-label-col: 160px;
 
   --rule: 1px solid var(--border-subtle);
+  --shadow-menu: 0 12px 32px rgba(22, 21, 15, 0.08);
+  color-scheme: light;
+}
+
+/* Dark theme — applied when the user picks Dark, or when System resolves to dark. */
+html[data-theme="dark"] {
+  --ink-primary: #fbfaf7;
+  --ink-secondary: #b5b3a8;
+  --ink-muted: #8a887e;
+  --ink-inverse: #16150f;
+
+  --surface-page: #16150f;
+  --surface-raised: #22211a;
+  --surface-inverse: #fbfaf7;
+
+  --accent: #6a9e97;
+  --accent-subtle: #1e2e2c;
+
+  --border-subtle: #2e2d26;
+  --border-strong: #fbfaf7;
+
+  --shadow-menu: 0 12px 32px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
 }

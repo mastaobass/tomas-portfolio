@@ -1,0 +1,310 @@
+---
+const options = [
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+  { value: "system", label: "System" },
+];
+---
+<div class="theme" data-theme-switcher>
+  <button
+    type="button"
+    class="theme__trigger"
+    data-theme-trigger
+    aria-expanded="false"
+    aria-haspopup="true"
+    aria-controls="theme-menu"
+    aria-label="Theme"
+  >
+    <span class="theme__icon" data-theme-icon="light" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 4.5V3m0 18v-1.5M19.5 12H21M3 12h1.5m13.86-6.36.96-.96M5.68 18.32l.96-.96m0-11.72-.96-.96m12.68 12.68-.96-.96M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"
+        />
+      </svg>
+    </span>
+    <span class="theme__icon" data-theme-icon="dark" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M20.25 14.25A8.25 8.25 0 0 1 9.75 3.75 7.5 7.5 0 1 0 20.25 14.25Z"
+        />
+      </svg>
+    </span>
+    <span class="theme__icon" data-theme-icon="system">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M5.25 5.25h13.5A1.5 1.5 0 0 1 20.25 6.75v7.5a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-7.5a1.5 1.5 0 0 1 1.5-1.5ZM8.25 18.75h7.5"
+        />
+      </svg>
+    </span>
+  </button>
+  <div class="theme__menu" id="theme-menu" data-theme-menu role="menu" aria-label="Color theme" hidden>
+    {options.map((opt) => (
+      <button
+        type="button"
+        class="theme__option"
+        role="menuitemradio"
+        data-theme-option={opt.value}
+        aria-checked="false"
+      >
+        <span class="theme__option-icon" aria-hidden="true">
+          {opt.value === "light" && (
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5V3m0 18v-1.5M19.5 12H21M3 12h1.5m13.86-6.36.96-.96M5.68 18.32l.96-.96m0-11.72-.96-.96m12.68 12.68-.96-.96M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"
+              />
+            </svg>
+          )}
+          {opt.value === "dark" && (
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M20.25 14.25A8.25 8.25 0 0 1 9.75 3.75 7.5 7.5 0 1 0 20.25 14.25Z"
+              />
+            </svg>
+          )}
+          {opt.value === "system" && (
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5.25 5.25h13.5A1.5 1.5 0 0 1 20.25 6.75v7.5a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-7.5a1.5 1.5 0 0 1 1.5-1.5ZM8.25 18.75h7.5"
+              />
+            </svg>
+          )}
+        </span>
+        {opt.label}
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "theme";
+  const VALID = new Set(["light", "dark", "system"]);
+
+  function readPreference() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (VALID.has(stored)) return stored;
+    } catch {
+      /* private mode / blocked storage */
+    }
+    return "system";
+  }
+
+  function writePreference(pref) {
+    try {
+      localStorage.setItem(STORAGE_KEY, pref);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function resolveTheme(pref) {
+    if (pref === "system") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    return pref;
+  }
+
+  function applyTheme(pref) {
+    document.documentElement.dataset.theme = resolveTheme(pref);
+    document.documentElement.dataset.themePreference = pref;
+  }
+
+  function syncSwitcher(root, pref) {
+    const icons = root.querySelectorAll("[data-theme-icon]");
+    icons.forEach((el) => {
+      el.hidden = el.getAttribute("data-theme-icon") !== pref;
+    });
+
+    const trigger = root.querySelector("[data-theme-trigger]");
+    if (trigger) {
+      const label =
+        pref === "light" ? "Theme: Light" : pref === "dark" ? "Theme: Dark" : "Theme: System";
+      trigger.setAttribute("aria-label", label);
+    }
+
+    root.querySelectorAll("[data-theme-option]").forEach((btn) => {
+      const selected = btn.getAttribute("data-theme-option") === pref;
+      btn.setAttribute("aria-checked", String(selected));
+      btn.classList.toggle("is-selected", selected);
+    });
+  }
+
+  function setOpen(root, open) {
+    const trigger = root.querySelector("[data-theme-trigger]");
+    const menu = root.querySelector("[data-theme-menu]");
+    if (!trigger || !menu) return;
+    root.classList.toggle("is-open", open);
+    trigger.setAttribute("aria-expanded", String(open));
+    menu.hidden = !open;
+  }
+
+  function setupThemeSwitcher() {
+    const root = document.querySelector("[data-theme-switcher]");
+    if (!root || root.dataset.ready === "true") return;
+    root.dataset.ready = "true";
+
+    const trigger = root.querySelector("[data-theme-trigger]");
+    const menu = root.querySelector("[data-theme-menu]");
+    if (!trigger || !menu) return;
+
+    let preference = readPreference();
+    applyTheme(preference);
+    syncSwitcher(root, preference);
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSystemChange = () => {
+      if (preference === "system") applyTheme("system");
+    };
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", onSystemChange);
+    } else if (typeof media.addListener === "function") {
+      media.addListener(onSystemChange);
+    }
+
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setOpen(root, !root.classList.contains("is-open"));
+    });
+
+    menu.querySelectorAll("[data-theme-option]").forEach((btn) => {
+      btn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const next = btn.getAttribute("data-theme-option");
+        if (!VALID.has(next)) return;
+        preference = next;
+        writePreference(preference);
+        applyTheme(preference);
+        syncSwitcher(root, preference);
+        setOpen(root, false);
+        trigger.focus();
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!root.contains(event.target)) setOpen(root, false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && root.classList.contains("is-open")) {
+        setOpen(root, false);
+        trigger.focus();
+      }
+    });
+  }
+
+  setupThemeSwitcher();
+  document.addEventListener("astro:page-load", setupThemeSwitcher);
+</script>
+
+<style>
+  .theme {
+    position: relative;
+  }
+  .theme__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .theme__trigger:hover,
+  .theme__trigger:focus-visible {
+    color: var(--ink-primary);
+  }
+  .theme__icon {
+    display: flex;
+  }
+  .theme__icon[hidden] {
+    display: none;
+  }
+  .theme__icon svg,
+  .theme__option-icon svg {
+    width: 18px;
+    height: 18px;
+    max-width: none;
+  }
+
+  .theme__menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 10.5rem;
+    padding: var(--space-xs);
+    background: var(--surface-page);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-menu);
+    z-index: 30;
+  }
+  .theme__menu[hidden] {
+    display: none;
+  }
+
+  .theme__option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    margin: 0;
+    padding: var(--space-sm);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-primary);
+    font: inherit;
+    font-size: var(--type-small);
+    text-align: left;
+    cursor: pointer;
+  }
+  .theme__option:hover,
+  .theme__option:focus-visible {
+    background: var(--surface-raised);
+  }
+  .theme__option.is-selected {
+    background: var(--surface-raised);
+  }
+  .theme__option-icon {
+    display: flex;
+    color: var(--ink-secondary);
+  }
+  .theme__option.is-selected .theme__option-icon {
+    color: var(--ink-primary);
+  }
+</style>
