@@ -34,8 +34,24 @@ function isCurrent(href) {
           aria-controls="work-menu"
           aria-current={onWork ? "page" : undefined}
         >
-          Work
-          <span class="nav__chevron" aria-hidden="true"></span>
+          <span class="nav__work-label">Work</span>
+          <svg
+            class="nav__chevron"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 4.5 6 7.5 9 4.5"
+            />
+          </svg>
         </a>
         <div class="nav__menu" id="work-menu" data-work-menu role="menu" aria-label="Case studies">
           <a
@@ -71,8 +87,10 @@ function isCurrent(href) {
         </li>
       ))}
     </ul>
-    <SocialLinks />
-    <ThemeSwitcher />
+    <div class="nav__icons">
+      <SocialLinks />
+      <ThemeSwitcher />
+    </div>
   </div>
 </nav>
 
@@ -157,6 +175,7 @@ function isCurrent(href) {
   }
   .nav__mark { font-size: var(--type-small); font-weight: 500; }
   .nav__end {
+    --nav-item-gap: 2px;
     display: flex;
     align-items: center;
     gap: var(--space-md);
@@ -164,12 +183,17 @@ function isCurrent(href) {
   .nav__links {
     display: flex;
     align-items: center;
-    gap: var(--space-xl);
+    gap: var(--nav-item-gap);
     list-style: none;
     margin: 0;
     padding: 0;
     font-size: var(--type-small);
     color: var(--ink-secondary);
+  }
+  .nav__icons {
+    display: flex;
+    align-items: center;
+    gap: var(--nav-item-gap);
   }
   .nav__links > li > a,
   .nav__work-trigger {
@@ -190,14 +214,16 @@ function isCurrent(href) {
   .nav__work-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 0.4em;
+    gap: var(--space-2xs);
+  }
+  .nav__work-label {
+    line-height: 1;
   }
   .nav__chevron {
-    width: 6px;
-    height: 6px;
-    border-right: 1.25px solid currentColor;
-    border-bottom: 1.25px solid currentColor;
-    transform: rotate(45deg) translateY(-1px);
+    display: block;
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
   }
 
   /* Hit area covering the visual gap and the left-extending panel
@@ -290,7 +316,6 @@ function isCurrent(href) {
       flex-wrap: wrap;
       row-gap: var(--space-sm);
     }
-    .nav__links { gap: var(--space-md); }
     .nav__end { margin-inline-start: auto; }
   }
 </style>
