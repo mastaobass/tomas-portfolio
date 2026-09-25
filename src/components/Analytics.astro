@@ -63,6 +63,24 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
           }), (e.__SV = 1));
         }(document, window.posthog || []);
 
+        // CEFSharp embedders (Outlook Safe Links, AOL Desktop, etc.) reject
+        // promises with this string; not site code. Drop before PostHog ingest.
+        // https://github.com/getsentry/sentry-javascript/pull/14595
+        var CEFSHARP_REJECTION =
+          /Object Not Found Matching Id:\d+, MethodName:\w+, ParamCount:\d+/;
+
+        function isCefSharpNoise(event) {
+          if (!event || event.event !== "$exception") return false;
+          var props = event.properties || {};
+          var list = props.$exception_list || [];
+          var primary = list[0] || null;
+          var message =
+            (primary && (primary.value || primary.$exception_message)) ||
+            (props.$exception_values && props.$exception_values[0]) ||
+            "";
+          return typeof message === "string" && CEFSHARP_REJECTION.test(message);
+        }
+
         posthog.init(key, {
           api_host: host,
           ui_host: "https://us.posthog.com",
@@ -75,6 +93,10 @@ const gaId = import.meta.env.PUBLIC_GA_ID || GA_MEASUREMENT_ID;
           persistence: "localStorage+cookie",
           respect_dnt: true,
           session_recording: { maskAllInputs: true },
+          before_send: function (event) {
+            if (isCefSharpNoise(event)) return null;
+            return event;
+          },
           loaded: function (ph) {
             wire(ph);
           },
