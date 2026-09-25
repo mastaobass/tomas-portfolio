@@ -17,6 +17,25 @@ const { title, description = "Senior Product Designer working on risk, decision,
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <link rel="icon" type="image/svg+xml" href={url("/favicon.svg")} />
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var pref = stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
+          var theme =
+            pref === "system"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : pref;
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.dataset.themePreference = pref;
+        } catch (e) {
+          document.documentElement.dataset.theme = "light";
+          document.documentElement.dataset.themePreference = "system";
+        }
+      })();
+    </script>
     <Analytics />
   </head>
   <body>
