@@ -51,14 +51,18 @@ import Base from "../layouts/Base.astro";
 </Base>
 
 <style>
-  .hero { padding-block: var(--space-3xl) var(--space-2xl); }
-  .hero__title { font-size: var(--type-h1); margin-block-start: var(--space-lg); max-width: 28ch; }
+  /* Match CaseStudy hero spacing / type scale; prose styles live in global.css */
+  .hero { padding-block: var(--space-2xl) var(--space-lg); }
+  .hero__title {
+    font-size: var(--type-h1);
+    margin-block: var(--space-lg) var(--space-lg);
+    max-width: 28ch;
+  }
   .hero__sub {
-    font-size: var(--type-body-lg);
-    line-height: 1.58;
+    font-size: var(--type-h3);
+    line-height: 1.45;
     color: var(--ink-secondary);
-    max-width: 58ch;
-    margin-block-start: var(--space-lg);
+    max-width: 62ch;
   }
   .prose { padding-block-end: var(--space-3xl); }
 </style>
