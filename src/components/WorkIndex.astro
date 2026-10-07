@@ -1,31 +1,50 @@
 ---
 import WorkRow from "./WorkRow.astro";
-const { label, note, studies, startIndex = 1 } = Astro.props;
+import WorkCard from "./WorkCard.astro";
+import { mediaFor } from "../lib/case-media.js";
+
+const { label, note, studies, startIndex = 1, variant = "rows" } = Astro.props;
+const cards = variant === "cards";
 ---
-<section class="index shell">
+<section class:list={["index shell", cards && "index--cards"]}>
   <header class="index__head">
     <h2 class="eyebrow">{label}</h2>
     {note && <p class="index__note">{note}</p>}
   </header>
   <hr class="rule" />
-  <ul class="index__list">
-    {studies.map((s, i) => (
-      <WorkRow
-        index={startIndex + i}
-        title={s.data.title}
-        outcome={s.data.outcome}
-        company={s.data.company}
-        role={s.data.role}
-        year={s.data.year}
-        href={`/work/${s.id}`}
-        code={s.data.code}
-      />
-    ))}
+  <ul class:list={["index__list", cards && "index__list--cards"]}>
+    {studies.map((s, i) => {
+      const media = mediaFor(s.id);
+      return cards && media ? (
+        <WorkCard
+          index={startIndex + i}
+          title={s.data.title}
+          lede={s.data.lede || s.data.outcome}
+          company={s.data.company}
+          year={s.data.year}
+          href={`/work/${s.id}`}
+          thumb={media.thumb}
+          priority={i < 3}
+        />
+      ) : (
+        <WorkRow
+          index={startIndex + i}
+          title={s.data.title}
+          outcome={s.data.outcome}
+          company={s.data.company}
+          role={s.data.role}
+          year={s.data.year}
+          href={`/work/${s.id}`}
+          code={s.data.code}
+        />
+      );
+    })}
   </ul>
 </section>
 
 <style>
   .index { padding-block-end: var(--space-3xl); }
+  .index--cards { padding-block-end: var(--space-2xl); }
   .index__head {
     display: flex;
     flex-wrap: wrap;
@@ -36,4 +55,12 @@ const { label, note, studies, startIndex = 1 } = Astro.props;
   }
   .index__note { font-size: var(--type-caption); color: var(--ink-muted); margin: 0; }
   .index__list { margin: 0; padding: 0; list-style: none; }
+  .index__list--cards {
+    display: grid;
+    gap: var(--space-xl) var(--space-lg);
+    padding-block-start: var(--space-xl);
+  }
+  @media (min-width: 960px) {
+    .index__list--cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
 </style>

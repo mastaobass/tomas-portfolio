@@ -5,7 +5,7 @@ import Figure from "../components/Figure.astro";
 import MetricGrid from "../components/MetricGrid.astro";
 import NextCase from "../components/NextCase.astro";
 
-const { data, nextStudy, cover } = Astro.props;
+const { data, nextStudy, gallery = [] } = Astro.props;
 ---
 <Base title={data.title} description={data.outcome}>
   <header class="hero shell">
@@ -32,10 +32,22 @@ const { data, nextStudy, cover } = Astro.props;
 
   <MetaBar role={data.role} team={data.team} timeframe={data.timeframe} platform={data.platform} />
 
-  {cover && (
-    <div class="cover shell">
-      <Figure src={cover} label="Cover image — the final screen" caption={data.coverCaption} ratio="16 / 9" />
-    </div>
+  {gallery.length > 0 && (
+    <section class="shipped shell" aria-label="Shipped interface">
+      <p class="eyebrow">Shipped</p>
+      <div class="shipped__frames">
+        {gallery.map((item, i) => (
+          <Figure
+            src={item.src}
+            alt={item.alt}
+            caption={item.caption}
+            framed
+            priority={i === 0}
+            sizes="(max-width: 860px) 100vw, 1080px"
+          />
+        ))}
+      </div>
+    </section>
   )}
 
   <div class="prose shell">
@@ -50,7 +62,7 @@ const { data, nextStudy, cover } = Astro.props;
 </Base>
 
 <style>
-  .hero { padding-block: var(--space-3xl) var(--space-xl); }
+  .hero { padding-block: var(--space-2xl) var(--space-lg); }
   .hero__title { font-size: var(--type-h1); margin-block: var(--space-lg) var(--space-lg); }
   .hero__outcome {
     font-size: var(--type-h3);
@@ -74,7 +86,17 @@ const { data, nextStudy, cover } = Astro.props;
     color: var(--ink-primary);
     border-bottom-color: var(--ink-primary);
   }
-  .cover { padding-block-end: var(--space-3xl); }
+  .shipped {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding-block-end: var(--space-2xl);
+  }
+  .shipped__frames {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
 </style>
 
 <style is:global>
@@ -128,7 +150,9 @@ const { data, nextStudy, cover } = Astro.props;
     font-weight: 400;
     margin-block: var(--space-lg) var(--space-sm);
   }
-  .prose > figure { margin-block-end: var(--space-xl); }
+  .prose > figure,
+  .prose > .sheet,
+  .prose > .flow { margin-block-end: var(--space-xl); }
   .prose > blockquote { margin-block-end: var(--space-xl); }
   .prose > ul, .prose > ol {
     font-family: var(--font-display);

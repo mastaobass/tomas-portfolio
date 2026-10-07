@@ -1,0 +1,20 @@
+<!--
+  Runs before paint. A saved "light" or "dark" wins. Otherwise the system
+  preference is the default and is not written to storage.
+-->
+<meta name="theme-color" content="#f4f6f8" />
+<script is:inline>
+  (function () {
+    var stored = null;
+    try {
+      var value = localStorage.getItem("theme");
+      if (value === "light" || value === "dark") stored = value;
+    } catch (e) {}
+    var theme =
+      stored ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#14171c" : "#f4f6f8");
+  })();
+</script>

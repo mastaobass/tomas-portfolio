@@ -9,10 +9,9 @@
 
 :root {
   /* ---- Score factor semantics ----
-   * Derived to sit in the same warm, desaturated family as --accent (#2f5d57).
-   * A pure red/green pair would read as pasted in from a stock dashboard, which
-   * defeats the point of building the recreation in this system.
-   * Contrast measured against --surface-page (#fbfaf7). */
+   * Kept off pure red/green so a factor list stays readable for red-green
+   * deficiency. These are product-UI colors, not the page accent.
+   * Contrast below is against the light canvas (#f4f6f8). */
   --signal-risk: #8a3a2d;          /* 7.3:1 — factors that SUBTRACT from score */
   --signal-risk-subtle: #f5e7e4;
   --signal-safety: #3a6440;        /* 6.4:1 — factors that ADD to score */

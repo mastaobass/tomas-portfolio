@@ -14,18 +14,32 @@ interface Props {
   caption?: string;
   label?: string;
   ratio?: string;
+  framed?: boolean;
+  priority?: boolean;
+  sizes?: string;
 }
 
-const { src, alt = "", caption, label = "Image", ratio = "16 / 9" } = Astro.props;
+const {
+  src,
+  alt = "",
+  caption,
+  label = "Image",
+  ratio = "16 / 9",
+  framed = false,
+  priority = false,
+  sizes = "(max-width: 860px) 100vw, 744px",
+} = Astro.props;
 const isAsset = typeof src === "object" && src !== null && "width" in src;
 ---
-<figure class="figure">
+<figure class:list={["figure", framed && "figure--framed"]}>
   {isAsset ? (
     <Image
       src={src}
       alt={alt}
       widths={[720, 1080, 1440]}
-      sizes="(max-width: 860px) 100vw, 744px"
+      sizes={sizes}
+      loading={priority ? "eager" : "lazy"}
+      fetchpriority={priority ? "high" : "auto"}
       class="figure__img"
     />
   ) : src ? (
@@ -45,6 +59,11 @@ const isAsset = typeof src === "object" && src !== null && "width" in src;
     height: auto;
     border-radius: var(--radius-sm);
     display: block;
+  }
+  .figure--framed .figure__img {
+    border: 1px solid var(--frame-border);
+    box-shadow: var(--frame-shadow);
+    background: var(--surface-raised);
   }
   .figure__placeholder {
     display: grid;

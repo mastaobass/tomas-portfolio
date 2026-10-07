@@ -24,6 +24,10 @@ h1, h2, h3, p, figure, blockquote { margin: 0; }
   outline-offset: 3px;
   border-radius: 2px;
 }
+::selection {
+  background: var(--accent-subtle);
+  color: var(--ink-primary);
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

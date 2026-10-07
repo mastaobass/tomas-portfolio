@@ -2,7 +2,7 @@
 import { url } from "../lib/path.js";
 import { getStudies } from "../lib/studies.js";
 import SocialLinks from "./SocialLinks.astro";
-import ThemeSwitcher from "./ThemeSwitcher.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 
 const professional = await getStudies("professional");
 
@@ -34,24 +34,8 @@ function isCurrent(href) {
           aria-controls="work-menu"
           aria-current={onWork ? "page" : undefined}
         >
-          <span class="nav__work-label">Work</span>
-          <svg
-            class="nav__chevron"
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3 4.5 6 7.5 9 4.5"
-            />
-          </svg>
+          Work
+          <span class="nav__chevron" aria-hidden="true"></span>
         </a>
         <div class="nav__menu" id="work-menu" data-work-menu role="menu" aria-label="Case studies">
           <a
@@ -59,6 +43,7 @@ function isCurrent(href) {
             href={url("/work")}
             role="menuitem"
             aria-current={rawPath === workRoot ? "page" : undefined}
+            data-ph="work_index_open"
           >
             All work
           </a>
@@ -70,6 +55,9 @@ function isCurrent(href) {
                 href={url(href)}
                 role="menuitem"
                 aria-current={isCurrent(href) ? "page" : undefined}
+                data-ph="case_study_open"
+                data-ph-title={study.data.title}
+                data-ph-placement="nav"
               >
                 <span class="nav__menu-index">{String(i + 1).padStart(2, "0")}</span>
                 <span class="nav__menu-copy">
@@ -87,10 +75,8 @@ function isCurrent(href) {
         </li>
       ))}
     </ul>
-    <div class="nav__icons">
-      <SocialLinks />
-      <ThemeSwitcher />
-    </div>
+    <ThemeToggle />
+    <SocialLinks />
   </div>
 </nav>
 
@@ -175,7 +161,6 @@ function isCurrent(href) {
   }
   .nav__mark { font-size: var(--type-small); font-weight: 500; }
   .nav__end {
-    --nav-item-gap: var(--space-sm);
     display: flex;
     align-items: center;
     gap: var(--space-md);
@@ -183,17 +168,12 @@ function isCurrent(href) {
   .nav__links {
     display: flex;
     align-items: center;
-    gap: var(--nav-item-gap);
+    gap: var(--space-xl);
     list-style: none;
     margin: 0;
     padding: 0;
     font-size: var(--type-small);
     color: var(--ink-secondary);
-  }
-  .nav__icons {
-    display: flex;
-    align-items: center;
-    gap: var(--nav-item-gap);
   }
   .nav__links > li > a,
   .nav__work-trigger {
@@ -214,16 +194,14 @@ function isCurrent(href) {
   .nav__work-trigger {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2xs);
-  }
-  .nav__work-label {
-    line-height: 1;
+    gap: 0.4em;
   }
   .nav__chevron {
-    display: block;
-    width: 12px;
-    height: 12px;
-    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-right: 1.25px solid currentColor;
+    border-bottom: 1.25px solid currentColor;
+    transform: rotate(45deg) translateY(-1px);
   }
 
   /* Hit area covering the visual gap and the left-extending panel
@@ -246,7 +224,7 @@ function isCurrent(href) {
     background: var(--surface-page);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-menu);
+    box-shadow: var(--shadow-overlay);
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
@@ -316,6 +294,7 @@ function isCurrent(href) {
       flex-wrap: wrap;
       row-gap: var(--space-sm);
     }
+    .nav__links { gap: var(--space-md); }
     .nav__end { margin-inline-start: auto; }
   }
 </style>

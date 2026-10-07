@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:4321/tomas-portfolio** (base path is required).
+Open **http://localhost:4321/** .
 
 ```bash
 npm run build    # static output in dist/
@@ -39,23 +39,42 @@ Create `src/content/case-studies/<slug>.mdx` with frontmatter (`title`, `outcome
 
 ## Analytics
 
-The site uses [PostHog](https://posthog.com), a free Heap-style product analytics tool: autocapture of clicks and pageviews, session replay, funnels, and named events for resume downloads, contact clicks, case study opens, and scroll depth.
+[PostHog](https://us.posthog.com) (US cloud) and GA4 both run on the marketing site. PostHog ingest is first-party via `https://e.tomas-stonehouse.com`, which CNAMEs to PostHog's managed proxy. The project API key is public. Override it with `PUBLIC_POSTHOG_KEY` / `PUBLIC_POSTHOG_HOST` / `PUBLIC_GA_ID` (see `.env.example`). GitHub Actions passes the same names from repository secrets when they are set. An empty secret keeps the fallback in `src/lib/analytics-config.js`.
 
-Free cloud plan is 1 million events and 5,000 session recordings per month. No credit card.
+Anonymous visitors are tracked with `person_profiles: "identified_only"`. Pageviews, autocapture, and the named events below still record. Person profiles are not created for people who never identify. Do Not Track is respected, so those browsers will not appear.
 
-1. Create an account at [us.posthog.com/signup](https://us.posthog.com/signup).
-2. Open **Project settings** and copy the **Project API Key** (starts with `phc_`).
-3. Paste it into `src/lib/analytics-config.js` as `POSTHOG_KEY`, then push to `main`.
-4. In PostHog, turn on **Session replay** and add `www.tomas-stonehouse.com` under authorized domains if that field is shown.
+Pageviews use `capture_pageview: "history_change"`, which covers full page loads and Astro client navigations. Every event gets `page_kind` (`home`, `work_index`, `case_study`, `about`, `contact`, `northwestern`) and a trailing-slash-normalized `path`, attached in `before_send` so the first pageview is included.
 
-Until a key is set, the analytics script is not included in the build.
+Named events:
 
-Named events already wired:
-
-- `case_study_open` / `case_study_view`
+- `case_study_open` / `case_study_view` / `work_index_open`
+- `code_console` / `code_github` / `code_storybook`
 - `resume_download`
 - `contact_email` / `contact_linkedin`
+- `theme_toggle`
 - `scroll_depth` at 25 / 50 / 75 / 100
+
+When a visit arrives with `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, or `ref`, those labels are kept for the browser tab (`sessionStorage`) and copied onto each PostHog event. Nothing here calls `identify()`.
+
+### Apply links
+
+Use one link per application. The visible text stays `www.tomas-stonehouse.com`. The href carries the campaign. Slug: lowercase letters, numbers, and hyphens, such as `acme-senior-pd-202609`.
+
+```html
+<a href="https://www.tomas-stonehouse.com/r/acme-senior-pd-202609">www.tomas-stonehouse.com</a>
+```
+
+That path stores `utm_campaign=acme-senior-pd-202609`, `utm_source=apply`, `utm_medium=email`, then opens `/` with a clean address bar. Add `?utm_source=` or `?utm_medium=` on the short link only when those defaults are wrong. Optional `ref` is another anonymous label in the same character set, not a name or an email.
+
+The same visit without the short path:
+
+```text
+https://www.tomas-stonehouse.com/?utm_source=apply&utm_medium=email&utm_campaign=acme-senior-pd-202609
+```
+
+In PostHog, break down or filter `$pageview`, `case_study_view`, `code_console`, `code_github`, `resume_download`, `contact_email`, and `theme_toggle` by `utm_campaign`. No events for that campaign after you send the application means the site was not opened. Pageviews and case views, then a rejection, means they looked at the work. A `contact_email` on that campaign means the portfolio produced a reply.
+
+Funnels to keep in PostHog: Landing (`path = /`) → Case (`case_study_view` or `page_kind = case_study`) → Contact (`page_kind = contact` or `contact_email`). Break case drop-off down by `path`, and application traffic down by `utm_campaign`.
 
 ## Deploy
 

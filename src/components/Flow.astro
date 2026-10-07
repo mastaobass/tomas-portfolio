@@ -1,0 +1,41 @@
+---
+const { label, steps = [] } = Astro.props;
+---
+<div class="flow">
+  {label && <p class="eyebrow">{label}</p>}
+  <ol>
+    {steps.map((step, i) => (
+      <li>
+        <span class="flow__n">{String(i + 1).padStart(2, "0")}</span>
+        <span>{step}</span>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .flow { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .flow ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-lg);
+    list-style: none;
+    margin: 0;
+    padding: var(--space-sm) 0 0;
+    border-top: var(--rule);
+  }
+  .flow li {
+    display: flex;
+    gap: 0.45rem;
+    align-items: baseline;
+    max-width: 16rem;
+    font-family: var(--font-ui);
+    font-size: var(--type-small);
+    line-height: 1.4;
+    color: var(--ink-primary);
+  }
+  .flow__n {
+    font-size: var(--type-caption);
+    color: var(--ink-muted);
+  }
+</style>

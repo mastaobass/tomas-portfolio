@@ -10,14 +10,14 @@ const studies = await getStudies("professional");
     <p class="eyebrow">Selected work</p>
     <h1 class="display hero__title">Risk, decision, and data-dense systems.</h1>
     <p class="hero__sub">
-      Each study leads with the outcome. Process is there if you want it.
+      The shipped interface is first. The constraint and the decisions follow.
     </p>
   </header>
-  <WorkIndex label="Professional" note="2019 — 2026" studies={studies} startIndex={1} />
+  <WorkIndex variant="cards" label="Professional" note="2019 — 2026" studies={studies} startIndex={1} />
 </Base>
 
 <style>
-  .hero { padding-block: var(--space-3xl) var(--space-2xl); }
+  .hero { padding-block: var(--space-2xl) var(--space-xl); }
   .hero__title { font-size: var(--type-h1); margin-block: var(--space-lg) var(--space-lg); max-width: 24ch; }
   .hero__sub { font-size: var(--type-body-lg); color: var(--ink-secondary); max-width: 52ch; }
 </style>

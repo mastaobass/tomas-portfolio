@@ -2,7 +2,7 @@
 import { render } from "astro:content";
 import CaseStudy from "../../layouts/CaseStudy.astro";
 import { getStudies } from "../../lib/studies.js";
-import heroCover from "../../assets/trust-score-hero.png";
+import { mediaFor } from "../../lib/case-media.js";
 
 export async function getStaticPaths() {
   // Drafts get no route in a production build, so an unfinished study cannot be
@@ -17,14 +17,8 @@ export async function getStaticPaths() {
 const { entry, all } = Astro.props;
 const { Content } = await render(entry);
 const nextStudy = entry.data.next ? all.find((s) => s.id === entry.data.next) : undefined;
-
-// Cover assets live in src/assets and are passed as ImageMetadata so Figure
-// can use Astro Image. Add new covers here when a study gets a hero image.
-const coverMap = {
-  "trust-score-explainability": heroCover,
-};
-const cover = coverMap[entry.id] ?? undefined;
+const gallery = mediaFor(entry.id)?.gallery ?? [];
 ---
-<CaseStudy data={entry.data} nextStudy={nextStudy} cover={cover}>
+<CaseStudy data={entry.data} nextStudy={nextStudy} gallery={gallery}>
   <Content />
 </CaseStudy>
