@@ -2,7 +2,7 @@
 import { url } from "../lib/path.js";
 import { getStudies } from "../lib/studies.js";
 import SocialLinks from "./SocialLinks.astro";
-import ThemeToggle from "./ThemeToggle.astro";
+import ThemeSwitcher from "./ThemeSwitcher.astro";
 
 const professional = await getStudies("professional");
 
@@ -75,8 +75,8 @@ function isCurrent(href) {
         </li>
       ))}
     </ul>
-    <ThemeToggle />
     <SocialLinks />
+    <ThemeSwitcher />
   </div>
 </nav>
 
