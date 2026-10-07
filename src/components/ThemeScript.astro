@@ -1,19 +1,23 @@
 <!--
-  Runs before paint. A saved "light" or "dark" wins. Otherwise the system
-  preference is the default and is not written to storage.
+  Runs before paint. Saved light/dark/system wins. Unset defaults to System
+  (follows prefers-color-scheme) and is not written to storage.
 -->
 <meta name="theme-color" content="#f4f6f8" />
 <script is:inline>
   (function () {
-    var stored = null;
+    var pref = "system";
     try {
       var value = localStorage.getItem("theme");
-      if (value === "light" || value === "dark") stored = value;
+      if (value === "light" || value === "dark" || value === "system") pref = value;
     } catch (e) {}
     var theme =
-      stored ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      pref === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : pref;
     document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-theme-preference", pref);
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", theme === "dark" ? "#14171c" : "#f4f6f8");
   })();
