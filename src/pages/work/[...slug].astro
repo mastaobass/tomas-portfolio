@@ -16,9 +16,27 @@ export async function getStaticPaths() {
 
 const { entry, all } = Astro.props;
 const { Content } = await render(entry);
-const nextStudy = entry.data.next ? all.find((s) => s.id === entry.data.next) : undefined;
 const gallery = mediaFor(entry.id)?.gallery ?? [];
+
+const trackStudies = all.filter((s) => s.data.track === entry.data.track);
+const index = trackStudies.findIndex((s) => s.id === entry.id);
+
+function toNav(study, i) {
+  return {
+    id: study.id,
+    title: study.data.title,
+    href: `/work/${study.id}`,
+    displayIndex: String(i + 1).padStart(2, "0"),
+  };
+}
+
+const prev =
+  index > 0 ? toNav(trackStudies[index - 1], index - 1) : undefined;
+const next =
+  index >= 0 && index < trackStudies.length - 1
+    ? toNav(trackStudies[index + 1], index + 1)
+    : undefined;
 ---
-<CaseStudy data={entry.data} nextStudy={nextStudy} gallery={gallery}>
+<CaseStudy data={entry.data} prev={prev} next={next} gallery={gallery}>
   <Content />
 </CaseStudy>

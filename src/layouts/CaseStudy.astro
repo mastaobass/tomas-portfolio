@@ -3,9 +3,9 @@ import Base from "./Base.astro";
 import MetaBar from "../components/MetaBar.astro";
 import Figure from "../components/Figure.astro";
 import MetricGrid from "../components/MetricGrid.astro";
-import NextCase from "../components/NextCase.astro";
+import CaseNav from "../components/CaseNav.astro";
 
-const { data, nextStudy, gallery = [] } = Astro.props;
+const { data, prev, next, gallery = [] } = Astro.props;
 ---
 <Base title={data.title} description={data.outcome}>
   <header class="hero shell">
@@ -58,7 +58,7 @@ const { data, nextStudy, gallery = [] } = Astro.props;
     {data.impactNotes.map((n) => <p>{n}</p>)}
   </MetricGrid>
 
-  {nextStudy && <NextCase title={nextStudy.data.title} href={`/work/${nextStudy.id}`} />}
+  {(prev || next) && <CaseNav prev={prev} next={next} />}
 </Base>
 
 <style>
