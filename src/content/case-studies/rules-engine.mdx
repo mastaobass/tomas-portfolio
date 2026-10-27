@@ -1,7 +1,7 @@
 ---
 title: Rules engine
 lede: Write, segment, and stage fraud policy without treating every change as a production risk.
-outcome: 41.5% adoption of the new policy model and 64.5% task completion for new policies, while platform volume crossed a million transactions a day. Rebuilt Policy Management across three phases so fraud teams could write, segment, and stage rules without treating every change as a production risk.
+outcome: 50% fewer steps to create a rule in usability testing. Rebuilt Policy Management across three phases so fraud teams could write, segment, and stage rules without treating every change as a production risk.
 company: Kount, an Equifax company
 role: Lead product designer
 team: 6 product leads over the life of the work · engineering · Compliance · Fraud Analysts
@@ -13,12 +13,15 @@ order: 2
 draft: false
 impactLead: Three shipped phases that made fraud policy writable and stageable under live traffic.
 metrics:
-  - value: "41.5%"
-    label: adoption of the new model
-  - value: "64.5%"
-    label: task completion for new policies
+  - value: "50%"
+    label: "50% fewer steps to create a rule (step count in usability testing)"
+  - value: "3"
+    label: versions shipped, each tested with customer fraud managers
+  - value: "1M+"
+    label: "transactions a day ran through the engine (platform scale, not an outcome I claim)"
 impactNotes:
-  - "Platform volume moved from roughly 100,000 transactions a day to over a million during this work. Adoption and task completion are from internal measurement after Version 3. Users still called parts of the surface clunky where scope was cut. Stated plainly because the alternative is a cleaner story than the one I lived."
+  - "In usability testing, we counted the steps it took to create a rule in the old editor and the new one. The new flow cut them in half."
+  - "Users still called parts of the surface clunky where scope was cut. Stated plainly because the alternative is a cleaner story than the one I lived."
 next: authorized-payment-protection
 ---
 
@@ -33,7 +36,7 @@ import paperWireframes from "../../assets/rules-paper-wireframes.png";
 
 A bad policy publishes into live traffic. The problem is not fewer form fields. It is boolean logic an analyst can re-read, plus a path to change policy without betting the day on a single publish.
 
-I was the lead designer on this surface for four years, across a cloud migration and six product leads. It shipped in three phases. Each phase answered a failure mode of the last. Features that made rules easier to write but harder to stage were incomplete.
+I was the lead designer on this surface for five years, across a cloud migration and six product leads. It shipped in three phases. Each phase answered a failure mode of the last. Features that made rules easier to write but harder to stage were incomplete. Every version went through usability testing with fraud managers at enterprise merchants and internal fraud teams before it shipped.
 
 ## Decisive moves
 
