@@ -22,6 +22,7 @@ code:
 ---
 
 import Figure from "../../components/Figure.astro";
+import ImageSlot from "../../components/ImageSlot.astro";
 import PullQuote from "../../components/PullQuote.astro";
 import DataTable from "../../components/DataTable.astro";
 import researchImage from "../../assets/research-trust-image.png";
@@ -36,6 +37,8 @@ Kount scores over a million transactions a day. An analyst sees a number between
 <PullQuote attribution="Fraud analyst, internal interview">
   “I trust the model. I just can’t tell a merchant why we blocked their best customer.”
 </PullQuote>
+
+<ImageSlot id="trust-opaque-score" />
 
 Two limits were fixed from the start. The model is proprietary, so contributing factors could surface and weights could not. Reason codes were pre-scripted by the risk team, not generated per transaction. The design problem was how to make that limited set feel sufficient for a decision an analyst has to defend.
 

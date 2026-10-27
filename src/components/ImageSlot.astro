@@ -1,0 +1,102 @@
+---
+/**
+ * One case-study image slot.
+ * A filled slot uses Figure, so it matches the other study images.
+ * An empty slot renders a labeled placeholder in dev and nothing in production.
+ */
+import Figure from "./Figure.astro";
+import { getSlot, resolveCaseImage, showImageSlots, slotRatio } from "../lib/image-slots.js";
+
+interface Props {
+  id: string;
+  framed?: boolean;
+  priority?: boolean;
+  sizes?: string;
+}
+
+const { id, framed = false, priority = false, sizes } = Astro.props;
+const slot = getSlot(id);
+const src = await resolveCaseImage(slot.path, id);
+const filled = Boolean(src);
+const alt = String(slot.alt ?? "").trim();
+const caption = String(slot.caption ?? "").trim();
+const note = String(slot.note ?? "").trim();
+const label = String(slot.label ?? "").trim() || "Image";
+const ratio = slotRatio(slot);
+
+if (filled && !alt) {
+  throw new Error(
+    `Image slot "${id}" has a path but no alt text. Set alt before this image can build.`,
+  );
+}
+if (!filled && showImageSlots && !note) {
+  throw new Error(`Image slot "${id}" needs a note describing the image.`);
+}
+---
+
+{
+  filled ? (
+    <Figure
+      src={src}
+      alt={alt}
+      caption={caption || undefined}
+      label={label}
+      ratio={ratio}
+      framed={framed}
+      priority={priority}
+      sizes={sizes}
+    />
+  ) : showImageSlots ? (
+    <figure class="slot" data-image-slot={id}>
+      <div class="slot__frame" style={`aspect-ratio: ${ratio}`}>
+        <div class="slot__label">
+          <span class="eyebrow">[ Image slot · {label} ]</span>
+          <span class="slot__id">{id}</span>
+          <span class="slot__hint">Dev preview. Omitted from the published site.</span>
+        </div>
+      </div>
+      <figcaption class="slot__caption">{note}</figcaption>
+    </figure>
+  ) : null
+}
+
+<style>
+  .slot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-width: 0;
+  }
+  .slot__frame {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    padding: var(--space-md);
+    background: var(--surface-raised);
+    border-radius: var(--radius-sm);
+    text-align: center;
+  }
+  .slot__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    min-width: 0;
+    max-width: 36ch;
+  }
+  .slot__id,
+  .slot__hint {
+    font-family: var(--font-ui);
+    font-size: var(--type-caption);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+  .slot__id { color: var(--ink-secondary); }
+  .slot__hint { color: var(--ink-muted); }
+  .slot__caption {
+    font-family: var(--font-ui);
+    font-size: var(--type-small);
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+</style>

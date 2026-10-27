@@ -37,6 +37,20 @@ Create `src/content/case-studies/<slug>.mdx` with frontmatter (`title`, `outcome
 
 `track: professional` or `track: northwestern` controls which index lists the study.
 
+## Image slots
+
+A study can reserve a figure before the file exists. Slots live in `src/lib/image-slots.js`. The study places one with `<ImageSlot id="rules-engines-merge" />`. A before/after row uses `<ImageCompare before="..." after="...">` around the figure that is already there.
+
+`npm run dev` draws an empty slot as a labeled placeholder. `npm run build` omits an empty slot, so the published page has no box, gap, or broken image. Set `PUBLIC_SHOW_IMAGE_SLOTS=true` only when you want those placeholders in a build. Leave it unset for the live site.
+
+Add an image:
+
+1. Drop a png, jpg, or webp file in `src/assets/`.
+2. On that slot, set `path` to the filename, `alt` to what the image shows, and `caption` if you want a line under it.
+3. Save. A filled slot with a blank `alt` fails the build.
+
+While the before and after slots are empty, the production page renders the middle figure alone.
+
 ## Analytics
 
 [PostHog](https://us.posthog.com) (US cloud) and GA4 both run on the marketing site. PostHog ingest is first-party via `https://e.tomas-stonehouse.com`, which CNAMEs to PostHog's managed proxy. The project API key is public. Override it with `PUBLIC_POSTHOG_KEY` / `PUBLIC_POSTHOG_HOST` / `PUBLIC_GA_ID` (see `.env.example`). GitHub Actions passes the same names from repository secrets when they are set. An empty secret keeps the fallback in `src/lib/analytics-config.js`.
