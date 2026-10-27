@@ -39,17 +39,15 @@ Create `src/content/case-studies/<slug>.mdx` with frontmatter (`title`, `outcome
 
 ## Image slots
 
-A study can reserve a figure before the file exists. Slots live in `src/lib/image-slots.js`. The study places one with `<ImageSlot id="rules-engines-merge" />`. A before/after row uses `<ImageCompare before="..." after="...">` around the figure that is already there.
+The shot list is `docs/IMAGE-SHOT-LIST.md`. Briefs live in `src/lib/image-slot-briefs.js`. A study places one with `<ImageSlot id="rules-engines-merge" />`. A before/after pair uses `<ImageCompare before="..." after="..." />`.
 
-`npm run dev` draws an empty slot as a labeled placeholder. `npm run build` omits an empty slot, so the published page has no box, gap, or broken image. Set `PUBLIC_SHOW_IMAGE_SLOTS=true` only when you want those placeholders in a build. Leave it unset for the live site.
+`npm run dev` draws an empty slot as a labeled brief: what to show, the preset, and the export size. `npm run build` omits an empty slot, so the published page has no box, gap, or broken image. Set `PUBLIC_SHOW_IMAGE_SLOTS=true` only when a build should show those briefs. Leave it unset for the live site.
 
 Add an image:
 
-1. Drop a png, jpg, or webp file in `src/assets/`.
-2. On that slot, set `path` to the filename, `alt` to what the image shows, and `caption` if you want a line under it.
-3. Save. A filled slot with a blank `alt` fails the build.
-
-While the before and after slots are empty, the production page renders the middle figure alone.
+1. Export it from the preset in the shot list and drop the file in `src/assets/`.
+2. Set `path` to the filename and `status` to `filled`. Keep or edit the draft `alt` and `caption`.
+3. Run `node scripts/image-shot-list.mjs`. A filled slot with a blank `alt` fails the build.
 
 ## Analytics
 

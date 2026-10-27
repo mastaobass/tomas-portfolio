@@ -1,9 +1,8 @@
 ---
 /**
- * Side-by-side case-study frames.
- * before and after are image slot ids. The default slot is the figure
- * already in the study. When both slots are empty, production renders
- * that figure alone, with no wrapper.
+ * Two matching case-study frames, side by side from 861px up and stacked below.
+ * before and after are image slot ids. When both are empty, production
+ * renders nothing, including no wrapper.
  */
 import ImageSlot from "./ImageSlot.astro";
 import { showImageSlots, slotHasFile } from "../lib/image-slots.js";
@@ -20,7 +19,7 @@ const showAfter = Boolean(after) && (slotHasFile(after!) || showImageSlots);
 const hasMain = Astro.slots.has("default");
 const count = Number(showBefore) + Number(hasMain) + Number(showAfter);
 const passthrough = hasMain && !showBefore && !showAfter;
-const column = Math.max(180, Math.round(744 / Math.max(count, 1)));
+const column = count > 1 ? Math.round((744 - 16 * (count - 1)) / count) : 744;
 const sizes = `(max-width: 860px) 100vw, ${column}px`;
 const pairCaption = caption.trim();
 ---

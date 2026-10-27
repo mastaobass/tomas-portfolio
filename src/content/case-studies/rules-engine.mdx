@@ -25,12 +25,10 @@ impactNotes:
 next: authorized-payment-protection
 ---
 
-import Figure from "../../components/Figure.astro";
 import ImageCompare from "../../components/ImageCompare.astro";
 import ImageSlot from "../../components/ImageSlot.astro";
 import Flow from "../../components/Flow.astro";
 import DataTable from "../../components/DataTable.astro";
-import paperWireframes from "../../assets/rules-paper-wireframes.png";
 
 ## Constraint
 
@@ -46,15 +44,9 @@ Rule managers could only combine conditions with AND. Common policies became wor
 
 What shipped was a file-management model. Sets held the slices of traffic. Policies under them could use AND or OR. Scheduling landed in the same pass, so a change could be planned instead of forced live.
 
-<ImageCompare before="rules-and-only-before" after="rules-nested-editor">
-  <Figure
-    src={paperWireframes}
-    alt="Hand-drawn paper wireframes exploring OR logic and nested policy structure"
-    label="Paper wireframes"
-    caption="Early structure work for OR logic. The evaluation model had to be right before the UI was worth polishing."
-    ratio="3 / 4"
-  />
-</ImageCompare>
+<ImageCompare before="rules-and-only-before" after="rules-nested-editor" />
+
+<ImageSlot id="rules-paper-wireframes" />
 
 ### Replace triggers with segments
 

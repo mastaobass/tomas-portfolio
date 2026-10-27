@@ -52,12 +52,16 @@ Detection was not the hard part. Authority was. Redeban sets a baseline every pa
 
 The product shipped as a stripped-down fork of Payments Fraud. The rules engine still worked as a configuration surface. What changed was hierarchy and visibility. Bank policies sat downstream of Redeban. The screen had to show that subordination without turning the network floor into something a bank user could browse or edit. A flat single-tenant model could not do that.
 
+<ImageSlot id="app-floor-hidden" />
+
 The review page was rebuilt around the same question: whose policy or model signal caught the payment, and what can this reviewer do. Public product language emphasizes origin and destination risk, velocity into the payee account, account age, type, and status. Those factors and their policy source had to be readable in the same place as the decision. Model reasons stayed at the policy and signal layer. Weights stayed hidden.
 
 <Flow
   label="From flag to decision"
   steps={["Network floor holds", "Bank policy layers on", "Signal names its source", "Reviewer confirms or corrects"]}
 />
+
+<ImageSlot id="app-rule-origin" />
 
 ### Tune the queue for irreversible settlement
 
