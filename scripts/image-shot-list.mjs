@@ -2,7 +2,7 @@ import { writeFileSync } from "node:fs";
 import { imagePresets, imageSlots, slotFormat } from "../src/lib/image-slot-briefs.js";
 
 function cell(value) {
-  return String(value).replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
+  return String(value).replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
 }
 
 function exportSize(preset) {
