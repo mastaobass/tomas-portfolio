@@ -158,8 +158,7 @@ export const imageSlots = [
     description:
       "The structure-studies sheet titled Make OR legible. Sketches move from trigger, policy, and condition to nested AND and OR groups. It shows the evaluation model drawn before a polished screen.",
     alt: "Hand-drawn structure studies titled Make OR legible, from a trigger, policy, and condition stack to nested AND and OR groups.",
-    caption:
-      "Early structure work for OR logic. The evaluation model had to be right before the UI was worth polishing.",
+    caption: "Evaluation model first, screens second.",
     path: "rules-paper-wireframes.png",
     columnScale: 0.6,
     status: "filled",
