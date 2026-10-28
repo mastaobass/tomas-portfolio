@@ -56,7 +56,7 @@ What shipped was a file-management model. Sets held the slices of traffic. Polic
 
 The next failure was scale of a different kind. Policy Management had to serve multiple event types, and two policy engines had to become one: Login, New Account Opening, and Payments Fraud on one configuration surface.
 
-Triggers were renamed segments. A segment is a named slice of traffic for an event type, with its own linked policies. You define who falls into it and what runs when they do. Policy sets left in this phase, and scheduling got harder without them. Analyst sessions, heatmaps on rule-creation drop-off, and several editor directions followed. Pure drag-and-drop lost to a hybrid that kept power without forcing everyone into a syntax surface.
+Triggers were renamed segments. A segment is a named slice of traffic for an event type, with its own linked policies. You define who falls into it and what runs when they do. Policy sets left in this phase, and scheduling got harder without them. I argued to keep policy sets. They let fraud managers think about risk in the context of their business, like Cyber Monday or after business hours, instead of in the abstract. Without them, tuning risk tolerance became more cumbersome and less intuitive. Analyst sessions, heatmaps on rule-creation drop-off, and several editor directions followed. Pure drag-and-drop lost to a hybrid that kept power without forcing everyone into a syntax surface.
 
 ### Stage, then publish
 
@@ -78,3 +78,7 @@ Sets came back with a clearer job. A set is a collection of segments and policie
 />
 
 Segments stayed. OR logic stayed. Triggers as a label did not: if analysts could not say what fired, the name was wrong. I had designed pieces of this surface earlier. Deciding which of those decisions still held was part of the job. Public product language on [Kount's support site](https://support.kount.com/hc/en-us/sections/36044748123412-Policy-Management) matches the model that shipped: sets, segments, policies, pending changes, and version history.
+
+## What I would measure next
+
+Next I would track time from draft to publish, how often pending changes are discarded, and restores after a bad publish.
