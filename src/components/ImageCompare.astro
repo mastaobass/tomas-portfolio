@@ -1,0 +1,66 @@
+---
+/**
+ * Two matching case-study frames, stacked at the full column width.
+ * before and after are image slot ids. When both are empty, production
+ * renders nothing, including no wrapper.
+ */
+import ImageSlot from "./ImageSlot.astro";
+import { showImageSlots, slotHasFile } from "../lib/image-slots.js";
+
+interface Props {
+  before?: string;
+  after?: string;
+  caption?: string;
+}
+
+const { before, after, caption = "" } = Astro.props;
+const showBefore = Boolean(before) && (slotHasFile(before!) || showImageSlots);
+const showAfter = Boolean(after) && (slotHasFile(after!) || showImageSlots);
+const hasMain = Astro.slots.has("default");
+const count = Number(showBefore) + Number(hasMain) + Number(showAfter);
+const passthrough = hasMain && !showBefore && !showAfter;
+const sizes = "(max-width: 860px) 100vw, 744px";
+const pairCaption = caption.trim();
+---
+
+{
+  passthrough ? (
+    <slot />
+  ) : count === 0 ? null : (
+    <div class="compare">
+      <div class="compare__frames">
+        {showBefore && before ? <ImageSlot id={before} sizes={sizes} /> : null}
+        {
+          hasMain ? (
+            <div class="compare__main">
+              <slot />
+            </div>
+          ) : null
+        }
+        {showAfter && after ? <ImageSlot id={after} sizes={sizes} /> : null}
+      </div>
+      {pairCaption ? <p class="compare__caption">{pairCaption}</p> : null}
+    </div>
+  )
+}
+
+<style>
+  .compare {
+    margin-block-end: var(--space-xl);
+    min-width: 0;
+  }
+  .compare__frames {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
+    align-items: start;
+  }
+  .compare__main { min-width: 0; }
+  .compare__caption {
+    margin: var(--space-sm) 0 0;
+    font-family: var(--font-ui);
+    font-size: var(--type-small);
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+</style>

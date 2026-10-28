@@ -1,0 +1,128 @@
+---
+/**
+ * One case-study image slot.
+ * A filled slot uses Figure, so it matches the other study images.
+ * An empty slot renders the brief in dev and nothing in production.
+ */
+import Figure from "./Figure.astro";
+import { getSlot, presetFor, resolveCaseImage, showImageSlots, slotFormat } from "../lib/image-slots.js";
+
+interface Props {
+  id: string;
+  framed?: boolean;
+  priority?: boolean;
+  sizes?: string;
+}
+
+const { id, framed = false, priority = false, sizes } = Astro.props;
+const slot = getSlot(id);
+const preset = presetFor(slot);
+const src = await resolveCaseImage(slot.path, id);
+const filled = Boolean(src);
+const alt = String(slot.alt ?? "").trim();
+const caption = String(slot.caption ?? "").trim();
+const description = String(slot.description ?? "").trim();
+const format = slotFormat(slot);
+const ratio = preset.ratio;
+const exportSize = `${preset.exportWidth} × ${preset.exportHeight}`;
+const limit = preset.limitWidth;
+const scale = Number(slot.columnScale);
+const narrow = scale > 0 && scale < 1;
+const narrowSizes = `(max-width: 860px) ${Math.round(scale * 100)}vw, ${Math.round(744 * scale)}px`;
+const figureSizes = sizes || (narrow ? narrowSizes : limit ? `${limit}px` : undefined);
+
+if (filled && !alt) {
+  throw new Error(
+    `Image slot "${id}" has a path but no alt text. Set alt before this image can build.`,
+  );
+}
+---
+
+{
+  filled && narrow ? (
+    <div class="slot-narrow" style={`width: ${scale * 100}%`}>
+      <Figure
+        src={src}
+        alt={alt}
+        caption={caption || undefined}
+        ratio={ratio}
+        framed={framed}
+        priority={priority}
+        sizes={figureSizes}
+      />
+    </div>
+  ) : filled ? (
+    <Figure
+      src={src}
+      alt={alt}
+      caption={caption || undefined}
+      ratio={ratio}
+      framed={framed}
+      priority={priority}
+      sizes={figureSizes}
+    />
+  ) : showImageSlots ? (
+    <figure class:list={["slot", (limit || narrow) && "slot--limit"]} data-image-slot={id} style={narrow ? `width: ${scale * 100}%; margin-inline: auto` : limit ? `max-width: ${limit}px` : undefined}>
+      <div class="slot__frame" style={`aspect-ratio: ${ratio}`}>
+        <div class="slot__label">
+          <span class="eyebrow">[ Image slot · {slot.label} ]</span>
+          <span class="slot__spec">{preset.label} · {preset.ratioLabel}</span>
+          <span class="slot__spec">{exportSize} px · {format}</span>
+          <span class="slot__hint">Dev preview. Omitted from the published site.</span>
+        </div>
+      </div>
+      <figcaption class="slot__caption">
+        <span class="slot__id">{id}</span>
+        {description}
+      </figcaption>
+    </figure>
+  ) : null
+}
+
+<style>
+  .slot-narrow {
+    margin-inline: auto;
+    margin-block-end: var(--space-xl);
+  }
+  .slot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-width: 0;
+  }
+  .slot__frame {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    padding: var(--space-md);
+    background: var(--surface-raised);
+    border-radius: var(--radius-sm);
+    text-align: center;
+  }
+  .slot__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    min-width: 0;
+    max-width: 36ch;
+  }
+  .slot__id,
+  .slot__spec,
+  .slot__hint {
+    font-family: var(--font-ui);
+    font-size: var(--type-caption);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+  .slot__id,
+  .slot__spec { color: var(--ink-secondary); }
+  .slot__id { display: block; margin-block-end: var(--space-2xs); }
+  .slot__hint { color: var(--ink-muted); }
+  .slot__caption {
+    font-family: var(--font-ui);
+    font-size: var(--type-small);
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+</style>

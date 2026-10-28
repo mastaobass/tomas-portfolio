@@ -25,10 +25,10 @@ impactNotes:
 next: authorized-payment-protection
 ---
 
-import Figure from "../../components/Figure.astro";
+import ImageCompare from "../../components/ImageCompare.astro";
+import ImageSlot from "../../components/ImageSlot.astro";
 import Flow from "../../components/Flow.astro";
 import DataTable from "../../components/DataTable.astro";
-import paperWireframes from "../../assets/rules-paper-wireframes.png";
 
 ## Constraint
 
@@ -44,13 +44,9 @@ Rule managers could only combine conditions with AND. Common policies became wor
 
 What shipped was a file-management model. Sets held the slices of traffic. Policies under them could use AND or OR. Scheduling landed in the same pass, so a change could be planned instead of forced live.
 
-<Figure
-  src={paperWireframes}
-  alt="Hand-drawn paper wireframes exploring OR logic and nested policy structure"
-  label="Paper wireframes"
-  caption="Early structure work for OR logic. The evaluation model had to be right before the UI was worth polishing."
-  ratio="3 / 4"
-/>
+<ImageCompare before="rules-and-only-before" after="rules-nested-editor" />
+
+<ImageSlot id="rules-paper-wireframes" />
 
 ### Replace triggers with segments
 
@@ -58,14 +54,20 @@ The next failure was scale of a different kind. Policy Management had to serve m
 
 Triggers were renamed segments. A segment is a named slice of traffic for an event type, with its own linked policies. You define who falls into it and what runs when they do. Policy sets left in this phase, and scheduling got harder without them. Analyst sessions, heatmaps on rule-creation drop-off, and several editor directions followed. Pure drag-and-drop lost to a hybrid that kept power without forcing everyone into a syntax surface.
 
+<ImageSlot id="rules-engines-merge" />
+
 ### Stage, then publish
 
 Sets came back with a clearer job. A set is a collection of segments and policies for an event type. Only one set is active per event type. Edits do not go live on save. They land as pending changes, can be compared to the published version, and publish only when someone confirms. Historical versions stay readable and locked. Restore is explicit.
+
+<ImageSlot id="rules-policy-management" />
 
 <Flow
   label="Publish path"
   steps={["Segment traffic", "Attach policies", "Stage as pending", "Compare to published", "Publish"]}
 />
+
+<ImageSlot id="rules-compare-published" />
 
 <DataTable
   label="Policy states"
