@@ -48,7 +48,7 @@ Slots are the images still to make for the case studies. Each one is a brief: wh
 
 Inline figures sit in the reading column, \`--layout-measure: 744px\`. Below 860px that column becomes the full shell. At an 860px viewport the shell is about 775px wide after \`--layout-gutter\`. That is the widest an inline figure renders. Export width **1584** is the smallest width at or above twice that which keeps a whole-pixel height for every full-column ratio below.
 
-A before/after pair shares the 744px column with a 16px gap from 861px up, about 364px each. Below that the two frames stack, so each one is exported at the full-column size.
+A before/after pair stacks at the full column width, so each screen stays readable. The paper sketch renders at 60% of that column, centered. Export every full-column frame at the full-column size.
 
 Source files are PNG for UI, diagrams, and drawings, and JPEG for photographs. The build converts either to WebP. AVIF is not enabled.
 

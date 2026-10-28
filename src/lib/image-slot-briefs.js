@@ -45,7 +45,7 @@ export const imagePresets = {
     exportWidth: 1584,
     exportHeight: 990,
     format: "PNG",
-    use: "Two matching screens. From 861px up they share the 744px column with a 16px gap, about 364px each. Below that they stack, so export at the full-column size.",
+    use: "Two matching screens, stacked at the full column width so each one stays readable. Export at the full-column size.",
   },
   detail: {
     label: "Detail crop",
@@ -130,7 +130,7 @@ export const imageSlots = [
     description:
       "The old Kount Rule Set Editor: Core checkout protection as a flat list of conditions and actions, with no group control. It shows the editor before nested boolean logic.",
     alt: "Kount Rule Set Editor for Core checkout protection, a flat list of rule conditions and rule actions.",
-    caption: "The previous Rule Set Editor. Conditions and actions in one list.",
+    caption: "Before: every condition was AND. Common policies became workarounds nobody could defend later.",
     path: "rules-and-only-before.png",
     status: "filled",
   },
@@ -144,7 +144,7 @@ export const imageSlots = [
     description:
       "The shipped dark editor: conditions in numbered groups, AND or OR inside a group, and OR between groups. This is the product screen, not the paper sheet under it.",
     alt: "Dark policy conditions editor with three groups, AND or OR inside a group, and OR selected between groups.",
-    caption: "The shipped editor. AND or OR inside a group, OR between groups.",
+    caption: "After: nested groups. AND or OR is chosen inside a group and between groups.",
     path: "rules-nested-editor.png",
     status: "filled",
   },
@@ -161,6 +161,7 @@ export const imageSlots = [
     caption:
       "Early structure work for OR logic. The evaluation model had to be right before the UI was worth polishing.",
     path: "rules-paper-wireframes.png",
+    columnScale: 0.6,
     status: "filled",
   },
   {
@@ -173,7 +174,7 @@ export const imageSlots = [
     description:
       "Diagram of both states: the Newest Policy Engine (Payments) plus the Newer Policy Engines (Logins and New Account Openings) equals one Unified Policy Engine with all three.",
     alt: "Diagram adding the Newest Policy Engine for Payments to the Newer Policy Engines for Logins and New Account Openings, equaling one Unified Policy Engine.",
-    caption: "Newest and Newer policy engines, and the unified engine.",
+    caption: "Two engines, three event types, one place to configure them.",
     path: "rules-engines-merge.png",
     status: "filled",
   },
@@ -181,13 +182,13 @@ export const imageSlots = [
     id: "rules-policy-management",
     study: "Rules engine",
     studyId: "rules-engine",
-    section: "Replace triggers with segments",
+    section: "Stage, then publish",
     preset: "pair",
     label: "Policy Management",
     description:
-      "The Kount 360 Policy Management screen for Payments Fraud: the active set, its version details, and the segment editor with nested condition groups. It shows the configuration surface after triggers became segments.",
-    alt: "Kount 360 Policy Management with the active Payments Fraud set, version details, and a segment editor of nested condition groups.",
-    caption: "Policy Management. The set, its version, and the segment's condition groups.",
+      "Kount 360 Policy Management for Payments Fraud, with Sets, Set Details, Version Details, and View Versions. It shows the set and its version in one place, after sets came back.",
+    alt: "Kount 360 Policy Management showing Sets, Set Details, Version Details, and View Versions for the Payments Fraud set.",
+    caption: "The set and its version sit in one place.",
     path: "rules-policy-management.png",
     status: "filled",
   },
@@ -201,7 +202,7 @@ export const imageSlots = [
     description:
       "Version history on Policy Management. Version 8 is a draft restored from version 5 and marked editing now. Version 7 is published and marked live now. The set is marked with unpublished changes. It shows a restore that stays a draft until someone publishes.",
     alt: "Policy Management version history. Version 8 is a draft restored from version 5. Version 7 is published and live. The set is marked with unpublished changes.",
-    caption: "Version history. A restored draft sits above the published version.",
+    caption: "A restore opens as a draft. Version 7 stays live until someone publishes.",
     path: "rules-compare-published.png",
     status: "filled",
   },

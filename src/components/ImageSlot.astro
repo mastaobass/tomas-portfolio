@@ -26,6 +26,10 @@ const format = slotFormat(slot);
 const ratio = preset.ratio;
 const exportSize = `${preset.exportWidth} × ${preset.exportHeight}`;
 const limit = preset.limitWidth;
+const scale = Number(slot.columnScale);
+const narrow = scale > 0 && scale < 1;
+const narrowSizes = `(max-width: 860px) ${Math.round(scale * 100)}vw, ${Math.round(744 * scale)}px`;
+const figureSizes = sizes || (narrow ? narrowSizes : limit ? `${limit}px` : undefined);
 
 if (filled && !alt) {
   throw new Error(
@@ -35,7 +39,19 @@ if (filled && !alt) {
 ---
 
 {
-  filled ? (
+  filled && narrow ? (
+    <div class="slot-narrow" style={`width: ${scale * 100}%`}>
+      <Figure
+        src={src}
+        alt={alt}
+        caption={caption || undefined}
+        ratio={ratio}
+        framed={framed}
+        priority={priority}
+        sizes={figureSizes}
+      />
+    </div>
+  ) : filled ? (
     <Figure
       src={src}
       alt={alt}
@@ -43,10 +59,10 @@ if (filled && !alt) {
       ratio={ratio}
       framed={framed}
       priority={priority}
-      sizes={sizes || (limit ? `${limit}px` : undefined)}
+      sizes={figureSizes}
     />
   ) : showImageSlots ? (
-    <figure class:list={["slot", limit && "slot--limit"]} data-image-slot={id} style={limit ? `max-width: ${limit}px` : undefined}>
+    <figure class:list={["slot", (limit || narrow) && "slot--limit"]} data-image-slot={id} style={narrow ? `width: ${scale * 100}%; margin-inline: auto` : limit ? `max-width: ${limit}px` : undefined}>
       <div class="slot__frame" style={`aspect-ratio: ${ratio}`}>
         <div class="slot__label">
           <span class="eyebrow">[ Image slot · {slot.label} ]</span>
@@ -64,6 +80,10 @@ if (filled && !alt) {
 }
 
 <style>
+  .slot-narrow {
+    margin-inline: auto;
+    margin-block-end: var(--space-xl);
+  }
   .slot {
     display: flex;
     flex-direction: column;
