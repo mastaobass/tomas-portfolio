@@ -1,110 +1,40 @@
 ---
 import Base from "../layouts/Base.astro";
-import WorkCard from "../components/WorkCard.astro";
 import WorkIndex from "../components/WorkIndex.astro";
-import { mediaFor } from "../lib/case-media.js";
 import { getStudies } from "../lib/studies.js";
 
 const professional = await getStudies("professional");
 const northwestern = await getStudies("northwestern");
-const lead = professional[0];
-const leadMedia = lead ? mediaFor(lead.id) : null;
-const featured = lead && leadMedia?.thumb ? lead : null;
-const rest = featured ? professional.slice(1) : professional;
 ---
 <Base>
-  {
-    featured && leadMedia ? (
-      <section class="home shell">
-        <div class="home__intro">
-          <p class="eyebrow">Senior Product Designer</p>
-          <h1 class="display home__statement">
-            I make complex risk and decision systems legible to the people who have to act on them.
-          </h1>
-          <p class="home__sub">
-            Senior Product Designer. Fraud, payments, and trust decision systems at Kount (Equifax). Review and policy surfaces used on more than a million transactions a day.
-          </p>
-          <p class="home__signal">
-            <a
-              href="https://mastaobass.github.io/trust-score-ds/console/"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-ph="code_console"
-              data-ph-placement="hero"
-            >
-              Live review console
-            </a>
-            <span aria-hidden="true">·</span>
-            <a
-              href="https://github.com/mastaobass/trust-score-ds"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-ph="code_github"
-              data-ph-placement="hero"
-            >
-              GitHub
-            </a>
-          </p>
-        </div>
+  <header class="hero shell">
+    <p class="eyebrow">Senior Product Designer</p>
+    <h1 class="display hero__statement">
+      I make complex risk and decision systems legible to the people who have to act on them.
+    </h1>
+    <p class="hero__sub">
+      Senior Product Designer. Fraud, payments, and trust decision systems at Kount (Equifax). Review and policy surfaces used on more than a million transactions a day.
+    </p>
+    <p class="hero__signal">
+      <a
+        href="https://mastaobass.github.io/trust-score-ds/console/"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ph="code_console"
+        data-ph-placement="hero"
+      >Live review console</a>
+      <span aria-hidden="true">·</span>
+      <a
+        href="https://github.com/mastaobass/trust-score-ds"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ph="code_github"
+        data-ph-placement="hero"
+      >GitHub</a>
+    </p>
+  </header>
 
-        <div class="home__lead">
-          <header class="home__workhead">
-            <h2 class="eyebrow" id="selected-work">Selected work</h2>
-            <p class="home__note">2019 — 2026</p>
-          </header>
-          <ul class="home__lead-list" aria-labelledby="selected-work">
-            <WorkCard
-              index={1}
-              title={featured.data.title}
-              lede={featured.data.lede || featured.data.outcome}
-              company={featured.data.company}
-              year={featured.data.year}
-              href={`/work/${featured.id}`}
-              thumb={leadMedia.thumb}
-              priority
-            />
-          </ul>
-        </div>
-
-        {
-          rest.length > 0 && (
-            <ul class="home__rest" aria-labelledby="selected-work">
-              {rest.map((study, i) => {
-                const media = mediaFor(study.id);
-                return media?.thumb ? (
-                  <WorkCard
-                    index={i + 2}
-                    title={study.data.title}
-                    lede={study.data.lede || study.data.outcome}
-                    company={study.data.company}
-                    year={study.data.year}
-                    href={`/work/${study.id}`}
-                    thumb={media.thumb}
-                  />
-                ) : null;
-              })}
-            </ul>
-          )
-        }
-      </section>
-    ) : (
-      <header class="hero shell">
-        <p class="eyebrow">Senior Product Designer</p>
-        <h1 class="display home__statement">
-          I make complex risk and decision systems legible to the people who have to act on them.
-        </h1>
-        <p class="home__sub">
-          Senior Product Designer. Fraud, payments, and trust decision systems at Kount (Equifax). Review and policy surfaces used on more than a million transactions a day.
-        </p>
-      </header>
-    )
-  }
-
-  {
-    !featured && (
-      <WorkIndex variant="cards" label="Selected work" note="2019 — 2026" studies={professional} startIndex={1} />
-    )
-  }
+  <WorkIndex variant="cards" label="Selected work" note="2019 — 2026" studies={professional} startIndex={1} />
 
   <WorkIndex
     label="Graduate work — Northwestern MPD²"
@@ -115,92 +45,33 @@ const rest = featured ? professional.slice(1) : professional;
 </Base>
 
 <style>
-  .home {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    column-gap: var(--space-xl);
-    row-gap: var(--space-xl);
-    align-items: start;
-    padding-block: var(--space-md) var(--space-2xl);
+  .hero { padding-block: var(--space-2xl) var(--space-xl); }
+  .hero__statement {
+    font-size: clamp(2.5rem, 1.2rem + 3vw, 3.75rem);
+    margin-block: var(--space-md) var(--space-md);
+    max-width: 22ch;
   }
-  .home__intro,
-  .home__lead {
-    min-width: 0;
-  }
-  .home__statement {
-    font-size: clamp(1.7rem, 1rem + 1.7vw, 2.85rem);
-    line-height: 1.08;
-    text-wrap: balance;
-    margin-block: var(--space-sm) var(--space-sm);
-    max-width: 18ch;
-  }
-  .home__sub {
+  .hero__sub {
     font-size: var(--type-body-lg);
-    line-height: 1.5;
+    line-height: 1.58;
     color: var(--ink-secondary);
-    max-width: 42ch;
+    max-width: 52ch;
   }
-  .home__signal {
+  .hero__signal {
     display: flex;
     flex-wrap: wrap;
     gap: 0.45em;
     align-items: baseline;
-    margin-block-start: var(--space-md);
+    margin-block-start: var(--space-lg);
     font-size: var(--type-caption);
     color: var(--ink-muted);
   }
-  .home__signal a {
+  .hero__signal a {
     color: var(--ink-secondary);
     border-bottom: 1px solid var(--border-subtle);
   }
-  .home__signal a:hover {
+  .hero__signal a:hover {
     color: var(--ink-primary);
     border-bottom-color: var(--ink-primary);
-  }
-  .home__workhead {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    align-items: baseline;
-    justify-content: space-between;
-    margin-block-end: var(--space-md);
-  }
-  .home__note {
-    margin: 0;
-    font-size: var(--type-caption);
-    color: var(--ink-muted);
-  }
-  .home__lead-list,
-  .home__rest {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .home__rest {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--space-xl) var(--space-lg);
-  }
-  .hero { padding-block: var(--space-lg) var(--space-md); }
-
-  @media (max-width: 860px) {
-    .home {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: var(--space-md);
-      padding-block: var(--space-xs) var(--space-xl);
-    }
-    .home__statement {
-      font-size: 1.65rem;
-      max-width: 22ch;
-      margin-block: var(--space-xs);
-    }
-    .home__sub {
-      font-size: 1rem;
-      line-height: 1.45;
-    }
-    .home__signal { margin-block-start: var(--space-sm); }
-    .home__workhead { margin-block-end: var(--space-sm); }
-    .home__rest { grid-template-columns: minmax(0, 1fr); }
   }
 </style>

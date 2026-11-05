@@ -1,24 +1,19 @@
 ---
 import { url } from "../lib/path.js";
-import CopyEmail from "./CopyEmail.astro";
 import SocialLinks from "./SocialLinks.astro";
 
-const resume = {
-  label: "Resume",
-  href: url("/tomas-stonehouse-resume.pdf"),
-  event: "resume_download",
-};
-const reviewConsole = {
-  label: "Review console",
-  href: "https://mastaobass.github.io/trust-score-ds/console/",
-  event: "code_console",
-};
+const email = "tomas.stonehouse@gmail.com";
+const links = [
+  { label: "Resume", href: url("/tomas-stonehouse-resume.pdf"), event: "resume_download" },
+  { label: "Email", href: `mailto:${email}`, event: "contact_email" },
+  { label: "Review console", href: "https://mastaobass.github.io/trust-score-ds/console/", event: "code_console" },
+];
 ---
 <footer class="footer">
   <div class="shell">
     <p class="eyebrow">Contact</p>
     <p class="display footer__line">Currently open to senior and staff product design roles, and to hybrid design-engineer seats.</p>
-    <CopyEmail variant="display" placement="footer" />
+    <a class="footer__email" href={`mailto:${email}`} data-ph="contact_email">{email}</a>
 
     <hr class="rule footer__rule" />
 
@@ -26,9 +21,9 @@ const reviewConsole = {
       <small>© {new Date().getFullYear()} Tomás Stonehouse</small>
       <div class="footer__meta">
         <ul class="footer__links">
-          <li><a href={resume.href} data-ph={resume.event}>{resume.label}</a></li>
-          <li><CopyEmail variant="menu" placement="footer_links" /></li>
-          <li><a href={reviewConsole.href} data-ph={reviewConsole.event}>{reviewConsole.label}</a></li>
+          {links.map((l) => (
+            <li><a href={l.href} data-ph={l.event}>{l.label}</a></li>
+          ))}
         </ul>
         <SocialLinks />
       </div>
@@ -43,6 +38,13 @@ const reviewConsole = {
     margin-block: var(--space-lg) var(--space-md);
     max-width: 26ch;
   }
+  .footer__email {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--type-h3);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .footer__email:hover { border-bottom-color: var(--ink-primary); }
   .footer__rule { margin-block: var(--space-xl); }
   .footer__bottom {
     display: flex;
