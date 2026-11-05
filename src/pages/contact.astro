@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-const email = "tomas.stonehouse@gmail.com";
+import CopyEmail from "../components/CopyEmail.astro";
 ---
 <Base title="Contact" description="Get in touch about senior and staff product design roles, and hybrid design-engineer seats on risk, payments, and trust systems.">
   <header class="hero shell">
@@ -9,7 +9,7 @@ const email = "tomas.stonehouse@gmail.com";
     <p class="hero__sub">
       Risk, payments, and trust systems. Best reached by email. I read everything and reply to anything specific.
     </p>
-    <a class="hero__email" href={`mailto:${email}`} data-ph="contact_email">{email}</a>
+    <CopyEmail variant="display" placement="contact" />
   </header>
 
   <div class="detail shell">
@@ -35,13 +35,6 @@ const email = "tomas.stonehouse@gmail.com";
   .hero { padding-block: var(--space-3xl) var(--space-2xl); }
   .hero__title { font-size: var(--type-h1); margin-block: var(--space-lg) var(--space-lg); max-width: 26ch; }
   .hero__sub { font-size: var(--type-body-lg); color: var(--ink-secondary); max-width: 52ch; margin-block-end: var(--space-lg); }
-  .hero__email {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: var(--type-h3);
-    border-bottom: 1px solid var(--border-subtle);
-  }
-  .hero__email:hover { border-bottom-color: var(--ink-primary); }
   .detail { padding-block-end: var(--space-3xl); }
   .detail__grid {
     display: grid;

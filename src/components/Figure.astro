@@ -1,11 +1,12 @@
 ---
 /**
  * The repeating unit inside Process and Solution.
+ * A real image opens in a dialog so the full frame can be inspected.
  * Pass an imported asset (ImageMetadata) for optimized output via Astro Image.
  * Pass a string path only for temporary public/ URLs during migration.
  * With no `src`, renders a labelled placeholder so studies can be written first.
  */
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 
 interface Props {
@@ -29,31 +30,193 @@ const {
   priority = false,
   sizes = "(max-width: 860px) 100vw, 744px",
 } = Astro.props;
-const isAsset = typeof src === "object" && src !== null && "width" in src;
+const asset = typeof src === "object" && src !== null && "width" in src ? src : null;
+
+let zoomSrc = "";
+let zoomWidth: number | undefined;
+let zoomHeight: number | undefined;
+if (asset) {
+  const width = Math.min(asset.width, 3200);
+  const full = await getImage({ src: asset, width, format: "webp", quality: 86 });
+  zoomSrc = full.src;
+  zoomWidth = Number(full.attributes.width) || undefined;
+  zoomHeight = Number(full.attributes.height) || undefined;
+} else if (typeof src === "string" && src.length > 0) {
+  zoomSrc = src;
+}
+
+const canZoom = zoomSrc.length > 0;
+const zoomLabel = alt ? `Enlarge image: ${alt}` : "Enlarge image";
+const dialogLabel = alt ? `Enlarged image: ${alt}` : "Enlarged image";
 ---
-<figure class:list={["figure", framed && "figure--framed"]}>
-  {isAsset ? (
-    <Image
-      src={src}
-      alt={alt}
-      widths={[720, 1080, 1440]}
-      sizes={sizes}
-      loading={priority ? "eager" : "lazy"}
-      fetchpriority={priority ? "high" : "auto"}
-      class="figure__img"
-    />
-  ) : src ? (
-    <img src={src} alt={alt} loading="lazy" decoding="async" class="figure__img" />
-  ) : (
-    <div class="figure__placeholder" style={`aspect-ratio:${ratio}`} role="img" aria-label={`Placeholder: ${label}`}>
-      <span class="eyebrow">[ {label} ]</span>
-    </div>
-  )}
+
+<figure class:list={["figure", framed && "figure--framed"]} data-zoom={canZoom ? "" : undefined}>
+  {
+    canZoom ? (
+      <button
+        type="button"
+        class="figure__open"
+        data-zoom-open
+        aria-haspopup="dialog"
+        aria-expanded="false"
+        aria-label={zoomLabel}
+      >
+        {asset ? (
+          <Image
+            src={asset}
+            alt={alt}
+            widths={[720, 1080, 1440]}
+            sizes={sizes}
+            loading={priority ? "eager" : "lazy"}
+            fetchpriority={priority ? "high" : "auto"}
+            class="figure__img"
+          />
+        ) : (
+          <img src={zoomSrc} alt={alt} loading="lazy" decoding="async" class="figure__img" />
+        )}
+        <span class="figure__hint" aria-hidden="true">
+          View larger
+        </span>
+      </button>
+    ) : asset ? (
+      <Image
+        src={asset}
+        alt={alt}
+        widths={[720, 1080, 1440]}
+        sizes={sizes}
+        loading={priority ? "eager" : "lazy"}
+        fetchpriority={priority ? "high" : "auto"}
+        class="figure__img"
+      />
+    ) : src ? (
+      <img src={src} alt={alt} loading="lazy" decoding="async" class="figure__img" />
+    ) : (
+      <div class="figure__placeholder" style={`aspect-ratio:${ratio}`} role="img" aria-label={`Placeholder: ${label}`}>
+        <span class="eyebrow">[ {label} ]</span>
+      </div>
+    )
+  }
+  {
+    canZoom && (
+      <dialog class="lightbox" data-zoom-dialog aria-label={dialogLabel}>
+        <div class="lightbox__panel">
+          <div class="lightbox__bar">
+            <button type="button" class="lightbox__close" data-zoom-close>
+              Close
+            </button>
+          </div>
+          <img
+            class="lightbox__img"
+            alt={alt}
+            data-zoom-full
+            data-src={zoomSrc}
+            width={zoomWidth}
+            height={zoomHeight}
+            decoding="async"
+          />
+          {caption && <p class="lightbox__caption">{caption}</p>}
+        </div>
+      </dialog>
+    )
+  }
   {caption && <figcaption class="figure__caption">{caption}</figcaption>}
 </figure>
 
+<script>
+  function openZoom(opener) {
+    const root = opener.closest("[data-zoom]");
+    const dialog = root?.querySelector("[data-zoom-dialog]");
+    if (!(dialog instanceof HTMLDialogElement)) return;
+    const img = dialog.querySelector("[data-zoom-full]");
+    if (img instanceof HTMLImageElement && img.dataset.src && !img.getAttribute("src")) {
+      img.src = img.dataset.src;
+    }
+    if (typeof dialog.showModal !== "function") return;
+    if (!dialog.open) dialog.showModal();
+    opener.setAttribute("aria-expanded", "true");
+    const close = dialog.querySelector("[data-zoom-close]");
+    if (close instanceof HTMLElement) close.focus({ preventScroll: true });
+  }
+
+  function setupZoom() {
+    if (document.documentElement.dataset.zoomReady === "true") return;
+    document.documentElement.dataset.zoomReady = "true";
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab") return;
+      const open = document.querySelector("dialog[open][data-zoom-dialog]");
+      if (!(open instanceof HTMLDialogElement)) return;
+      const focusable = [...open.querySelectorAll("button, a[href], input, select, textarea, [tabindex]")]
+        .filter((el) => {
+          if (!(el instanceof HTMLElement)) return false;
+          if (el.hidden || el.getAttribute("aria-hidden") === "true") return false;
+          if (el.hasAttribute("disabled") || el.tabIndex < 0) return false;
+          return el.getClientRects().length > 0;
+        });
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      const inside = active instanceof Node && open.contains(active);
+      if (event.shiftKey && (!inside || active === first)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (!inside || active === last)) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const opener = target.closest("[data-zoom-open]");
+      if (opener instanceof HTMLElement) {
+        openZoom(opener);
+        return;
+      }
+
+      const dialog = target.closest("[data-zoom-dialog]");
+      if (!(dialog instanceof HTMLDialogElement)) return;
+      if (target.closest("[data-zoom-close]") || target === dialog) dialog.close();
+    });
+
+    document.addEventListener(
+      "close",
+      (event) => {
+        const dialog = event.target;
+        if (!(dialog instanceof HTMLDialogElement) || !dialog.matches("[data-zoom-dialog]")) return;
+        const opener = dialog.closest("[data-zoom]")?.querySelector("[data-zoom-open]");
+        if (opener instanceof HTMLElement) opener.setAttribute("aria-expanded", "false");
+      },
+      true,
+    );
+  }
+
+  setupZoom();
+  document.addEventListener("astro:page-load", setupZoom);
+</script>
+
 <style>
   .figure { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .figure__open {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    cursor: zoom-in;
+    border-radius: var(--radius-sm);
+  }
   .figure__img {
     width: 100%;
     height: auto;
@@ -65,6 +228,31 @@ const isAsset = typeof src === "object" && src !== null && "width" in src;
     box-shadow: var(--frame-shadow);
     background: var(--surface-raised);
   }
+  .figure__hint {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    z-index: 1;
+    padding: 0.2rem 0.45rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--surface-page) 90%, transparent);
+    box-shadow: var(--frame-shadow);
+    color: var(--ink-primary);
+    font-family: var(--font-ui);
+    font-size: var(--type-caption);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .figure__open:hover .figure__hint,
+  .figure__open:focus-visible .figure__hint {
+    color: var(--ink-inverse);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
   .figure__placeholder {
     display: grid;
     place-items: center;
@@ -73,6 +261,74 @@ const isAsset = typeof src === "object" && src !== null && "width" in src;
     width: 100%;
   }
   .figure__caption {
+    font-family: var(--font-ui);
+    font-size: var(--type-small);
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+
+  .lightbox {
+    width: min(1080px, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    background: transparent;
+    color: var(--ink-primary);
+  }
+  .lightbox::backdrop {
+    background: rgba(12, 14, 18, 0.78);
+  }
+  .lightbox__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    overflow: auto;
+    padding: var(--space-sm) var(--space-sm) var(--space-md);
+    background: var(--surface-page);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-overlay);
+  }
+  .lightbox__bar {
+    display: flex;
+    justify-content: flex-end;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--surface-page);
+  }
+  .lightbox__close {
+    margin: 0;
+    padding: 0.35rem 0.15rem;
+    border: 0;
+    background: transparent;
+    color: var(--ink-secondary);
+    font: inherit;
+    font-size: var(--type-small);
+    cursor: pointer;
+  }
+  .lightbox__close:hover {
+    color: var(--ink-primary);
+  }
+  .lightbox__img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100vh - 11rem);
+    max-height: calc(100dvh - 11rem);
+    margin-inline: auto;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    background: var(--surface-raised);
+  }
+  .lightbox__caption {
+    margin: 0;
     font-family: var(--font-ui);
     font-size: var(--type-small);
     line-height: 1.5;

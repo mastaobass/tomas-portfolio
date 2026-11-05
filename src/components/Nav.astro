@@ -1,6 +1,7 @@
 ---
 import { url } from "../lib/path.js";
 import { getStudies } from "../lib/studies.js";
+import CopyEmail from "./CopyEmail.astro";
 import SocialLinks from "./SocialLinks.astro";
 import ThemeSwitcher from "./ThemeSwitcher.astro";
 
@@ -21,7 +22,10 @@ function isCurrent(href) {
 }
 ---
 <nav class="nav shell" aria-label="Primary">
-  <a class="nav__mark" href={url("/")}>Tomás Stonehouse</a>
+  <div class="nav__brand">
+    <a class="nav__mark" href={url("/")}>Tomás Stonehouse</a>
+    <CopyEmail variant="inline" placement="nav" />
+  </div>
   <div class="nav__end">
     <ul class="nav__links">
       <li class="nav__item nav__item--work" data-work-nav>
@@ -92,6 +96,7 @@ function isCurrent(href) {
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
     const closeDelay = 280;
     let closeTimer = 0;
+    let blockOpen = false;
 
     const setOpen = (open) => {
       item.classList.toggle("is-open", open);
@@ -99,6 +104,7 @@ function isCurrent(href) {
     };
 
     const openMenu = () => {
+      if (blockOpen) return;
       window.clearTimeout(closeTimer);
       setOpen(true);
     };
@@ -137,11 +143,14 @@ function isCurrent(href) {
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        window.clearTimeout(closeTimer);
-        setOpen(false);
-        trigger.focus();
-      }
+      if (event.key !== "Escape" || !item.classList.contains("is-open")) return;
+      // A modal image dialog handles its own Escape and focus return.
+      if (event.target instanceof Element && event.target.closest("dialog")) return;
+      window.clearTimeout(closeTimer);
+      blockOpen = true;
+      setOpen(false);
+      trigger.focus();
+      blockOpen = false;
     });
   }
 
@@ -158,6 +167,13 @@ function isCurrent(href) {
     padding-block: var(--space-lg);
     position: relative;
     z-index: 20;
+  }
+  .nav__brand {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem var(--space-md);
+    min-width: 0;
   }
   .nav__mark { font-size: var(--type-small); font-weight: 500; }
   .nav__end {
@@ -231,7 +247,6 @@ function isCurrent(href) {
     z-index: 30;
   }
   .nav__item--work:hover .nav__menu,
-  .nav__item--work:focus-within .nav__menu,
   .nav__item--work.is-open .nav__menu {
     visibility: visible;
     opacity: 1;
@@ -280,6 +295,19 @@ function isCurrent(href) {
     line-height: 1.35;
   }
 
+  @media (max-width: 980px) {
+    .nav {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      row-gap: var(--space-xs);
+      padding-block: var(--space-sm);
+    }
+    .nav__end {
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
   @media (max-width: 640px) {
     .nav__item--work { position: static; }
     .nav__item--work::after { content: none; }
