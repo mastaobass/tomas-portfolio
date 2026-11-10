@@ -5,16 +5,15 @@ import { getStudies } from "../../lib/studies.js";
 
 const studies = await getStudies("northwestern");
 ---
-<Base title="Northwestern" description="Graduate work from Northwestern's MPD² program.">
+<Base title="Northwestern" description="Autonome, a year-long Northwestern MPD² capstone: ethnographic research, a patented kitchen tool, and a lean business case.">
   <header class="hero shell">
-    <p class="eyebrow">Graduate work — Northwestern MPD²</p>
+    <p class="eyebrow">Graduate work: Northwestern MPD²</p>
     <h1 class="display hero__title">Master of Engineering, Product Design &amp; Development Management.</h1>
     <p class="hero__sub">
-      Coursework and capstone projects. Same structure as the professional studies — what the
-      project proved, and what it produced.
+      A year-long capstone from Northwestern's MPD² program: ethnographic research through a provisional patent and a priced business case.
     </p>
   </header>
-  <WorkIndex label="Graduate projects" studies={studies} startIndex={1} />
+  <WorkIndex label="Capstone" studies={studies} startIndex={1} />
 </Base>
 
 <style>
