@@ -1,7 +1,7 @@
 ---
 title: Trust score explainability
-lede: A score a reviewer can defend, not a number they have to take on faith.
-outcome: Rebuilt the score as an argument a reviewer can defend, not a number they have to take on faith. Analysts were approving and declining more than a million transactions a day on a score they could not explain.
+lede: Explainable fraud scores in Kount's review console. Shipped as Explainable AI for Omniscore, plus a public coded rebuild.
+outcome: Designed the trust score explainer in Kount's review console, which shipped as Explainable AI for Omniscore. A score waterfall and reason codes let fraud analysts defend approve, hold, and decline decisions on a platform that scored 1M+ transactions a day.
 company: Kount, an Equifax company
 role: Lead product designer
 team: 1 PM · 1 solutions architect · 2 engineers · 3 data scientists
@@ -10,11 +10,11 @@ platform: Web · internal review console
 year: 2024
 track: professional
 order: 1
-impactLead: The decision did not change. The defensibility of it did.
+impactLead: Shipped as Explainable AI for Omniscore. The explainer put the factors behind a score on the same screen as the decision, so an analyst could answer a merchant's challenge without escalating to engineering.
 metrics: []
 impactNotes:
-  - "The feature shipped as Explainable AI for Omniscore. Equifax describes it as giving users factor-by-factor risk assessments that let them identify key risk drivers quickly, improve accuracy, and reduce time spent on manual investigation — and as reducing the need for overly complex rules, because analysts who trust the score stop compensating for it in policy."
-  - "Those are Equifax's published descriptions of the shipped product, not outcomes I measured. I designed the interface; I did not run the study that would let me claim a number, and I would rather say so than round one up."
+  - "The feature shipped as Explainable AI for Omniscore. Equifax describes it as giving users factor-by-factor risk assessments that let them identify key risk drivers quickly, improve accuracy, and reduce time spent on manual investigation. Equifax also says it reduces the need for overly complex rules, because analysts who trust the score stop compensating for it in policy."
+  - "Those are Equifax's published descriptions of the shipped product, not outcomes I measured. I designed the interface. I did not run the study that would produce a number, so none is claimed here."
 next: rules-engine
 code:
   console: https://mastaobass.github.io/trust-score-ds/console/
@@ -86,7 +86,7 @@ Inactive reason codes stay on the screen, dimmed rather than hidden, so analysts
 <Figure
   src={reasonCodesImage}
   alt="Two-column reason code list with active codes at full opacity and inactive codes dimmed"
-  label="Detail — reason codes"
+  label="Detail: reason codes"
   caption="Inactive reason codes stay visible at reduced opacity. Absence is information."
   ratio="16 / 8"
 />
@@ -100,7 +100,7 @@ The original Figma file is Equifax IP. The public kit is the same slice rebuilt:
 <Figure
   src={reconstructedModal}
   alt="Reconstructed trust score explainer for order 48291-C showing score 85.6, a composition waterfall from the 80.0 baseline, two-column reason codes, and approve, hold, and decline actions"
-  label="Reconstruction — explainer"
+  label="Reconstruction: explainer"
   caption="The same modal, now a React composition. Approve, hold, and decline write back to the queue. Feedback routes to reason-code tuning. The score itself does not change."
 />
 

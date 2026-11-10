@@ -30,7 +30,7 @@ const cards = variant === "cards";
         <WorkRow
           index={startIndex + i}
           title={s.data.title}
-          outcome={s.data.outcome}
+          outcome={s.data.lede || s.data.outcome}
           company={s.data.company}
           role={s.data.role}
           year={s.data.year}

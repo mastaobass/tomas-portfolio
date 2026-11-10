@@ -3,7 +3,7 @@ import Base from "../layouts/Base.astro";
 ---
 <Base
   title="About"
-  description="Senior Product Designer for fraud, payments, and trust decision systems. Formerly Kount, an Equifax company."
+  description="Senior Product Designer for B2B SaaS fraud and risk. Formerly at Kount, an Equifax company, where I designed the rules engine, review console, and design system."
 >
   <header class="hero shell">
     <p class="eyebrow">About</p>
@@ -11,7 +11,7 @@ import Base from "../layouts/Base.astro";
       I design the surfaces people use when a model, a policy, and a person have to agree.
     </h1>
     <p class="display hero__outcome">
-      Fraud, payments, and trust decision systems. Ten years in product design, five of them designing fraud and risk products at Kount, Equifax's fraud platform, on interfaces that reviewed more than a million transactions a day.
+      Fraud, payments, and risk products for B2B SaaS. Ten years in product design, five of them at Kount, an Equifax company, designing for a fraud platform that handled 1M+ transactions a day.
     </p>
   </header>
 
@@ -21,10 +21,10 @@ import Base from "../layouts/Base.astro";
       Risk products fail in a specific way. The model can be right and the reviewer still cannot defend the decision. The policy can be sound and still unpublished because the editor is a production risk. The network can set a floor and the bank reviewing the payment still cannot tell whose rule fired.
     </p>
     <p>
-      That is the work I want. I shipped design on Kount 360, Payments Fraud, Authorized Payment Protection, Account Protection, and Dispute and Chargeback Manager, including the original information architecture for Policy Management on Kount 360. I sit with data science on what a score is allowed to reveal, and with engineering on what a configuration surface is allowed to publish into live traffic.
+      That is the work I want. At Kount I designed the rules engine, the review console, and a design system used by 1 team on a platform with 7+ products. I shipped design on Kount 360, Payments Fraud, Authorized Payment Protection, Account Protection, and Dispute and Chargeback Manager, including the original information architecture for Policy Management. I sit with data science on what a score is allowed to reveal, and with engineering on what a configuration surface is allowed to publish into live traffic.
     </p>
     <p>
-      I also ship the interface in code when that is the fastest way to prove the argument. The trust score explainer exists as a React and Storybook kit, not only as a writeup.
+      I also ship the interface in code when that proves the point faster. I rebuilt a slice of the trust score review console as a <a href="https://mastaobass.github.io/trust-score-ds/console/" target="_blank" rel="noopener noreferrer">public React app</a>, and I prototype faster with Figma Make and Cursor.
     </p>
 
     <h2>Why this work</h2>
@@ -37,7 +37,10 @@ import Base from "../layouts/Base.astro";
 
     <h2>How I work</h2>
     <p>
-      In these products the interface is downstream of a model, a policy, and a regulator. None of those are negotiable from Figma. I spend longer than most designers on what the system actually does, then design the smallest surface that makes origin, authority, and next action legible.
+      In these products the interface is downstream of a model, a policy, and a regulator. None of those are negotiable from Figma. I start with what the system actually does: what the model can reveal, what the policy allows, and what a reviewer is permitted to change. Then I design the smallest surface that makes origin, authority, and next action legible.
+    </p>
+    <p>
+      I raise structural risk early and I do my own design QA. On the rules engine, QA surfaced where dropped features left incomplete experiences, like a V1 locking mechanism that made it unclear who had access to change things.
     </p>
     <p>
       I speak Spanish. On authorized payment protection that put me in the stakeholder room with a Latin American payment network instead of reading the meeting afterward.

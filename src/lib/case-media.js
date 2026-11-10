@@ -35,7 +35,7 @@ export const caseMedia = {
         src: trustHero,
         alt: "Transaction Trust Score modal showing score 85.6, waterfall chart of contributing factors, and two-column reason codes",
         caption:
-          "The trust score explainer. Score bands render at equal width even though their ranges are unequal. Kount's published threshold guidance puts roughly 5% of volume below 61, so the vast majority of traffic sits in the top bands — proportional widths would compress the range where nearly every real decision happens.",
+          "Score bands render at equal width on purpose. Most traffic sits in the top bands, and proportional widths would squeeze the range where real decisions happen.",
       },
       {
         src: trustQueue,

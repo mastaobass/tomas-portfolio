@@ -1,7 +1,7 @@
 ---
 title: Authorized payment protection
-lede: A network and its banks share one irreversible fraud decision without colliding.
-outcome: Shipped the first-version policy model and review surface so a payment network and its member banks could act on the same irreversible fraud decision without colliding. I left in a reduction before outcomes matured, so the evidence here is the decisions, not a result I can source.
+lede: Authorized push payment fraud tooling for an instant-payment network and its member banks, forked from Kount's review console.
+outcome: Shipped the first-version policy model and review console for authorized push payment fraud, so a payment network and its member banks could act on the same irreversible decision with each party's authority visible.
 company: Kount, an Equifax company
 role: Lead product designer
 team: 1 Product Director · 1 Product Owner · 1 Engineering Pod · 4 Data Scientists
@@ -12,11 +12,9 @@ track: professional
 order: 3
 draft: false
 impactLead: Shipped the first version and set direction for a fraud category that card tooling cannot address.
-metrics:
-  - value: "3"
-    label: layers in the policy model
+metrics: []
 impactNotes:
-  - "I shipped the first version and set direction, then was part of a reduction before outcomes matured. The evidence in this study is the decisions, not the results. Stated plainly because the alternative is a number I cannot source."
+  - "I shipped the first version and set direction. Outcomes had not matured when I left, so the evidence here is the decisions."
 next: autonome
 ---
 
@@ -50,7 +48,7 @@ Detection was not the hard part. Authority was. Redeban sets a baseline every pa
 
 ### Show whose rule is binding
 
-The product shipped as a stripped-down fork of Payments Fraud. The rules engine still worked as a configuration surface. What changed was hierarchy and visibility. Bank policies sat downstream of Redeban. The screen had to show that subordination without turning the network floor into something a bank user could browse or edit. A flat single-tenant model could not do that.
+The product shipped as a stripped-down fork of the Payments Fraud review console I had designed. The rules engine still worked as a configuration surface. What changed was hierarchy and visibility. Bank policies sat downstream of Redeban. The screen had to show that subordination without turning the network floor into something a bank user could browse or edit. A flat single-tenant model could not do that.
 
 <ImageSlot id="app-floor-hidden" />
 
@@ -79,7 +77,7 @@ I had designed the original rules engine for Kount 360. Deciding which half surv
 
 ## What I would have measured
 
-This shipped, and I did not get to see the numbers. I was part of a reduction before results matured. Early adoption was the only outcome available. I am not going to invent a metric past that.
+This shipped before outcome data matured. Early adoption was the only result I saw.
 
 What I would have instrumented: reviewer override rate on network-set rules versus bank-set rules, because a high override rate on the floor would have meant the authority model was still illegible. Then false-positive rate on flagged payments, and time-to-decision under the real-time constraint.
 

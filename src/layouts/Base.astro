@@ -8,9 +8,12 @@ import ThemeScript from "../components/ThemeScript.astro";
 import { url } from "../lib/path.js";
 const {
   title,
-  description = "Senior Product Designer working on risk, decision, and data-dense systems.",
+  description = "Senior Product Designer for B2B SaaS fraud and risk. Formerly at Kount, an Equifax company, where I designed the rules engine, review console, and design system.",
   noindex = false,
 } = Astro.props;
+const pageTitle = title
+  ? `${title} · Tomás Stonehouse`
+  : "Tomás Stonehouse · Senior Product Designer, B2B SaaS fraud and risk";
 ---
 <!doctype html>
 <html lang="en">
@@ -19,9 +22,9 @@ const {
     <Campaign />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title ? `${title} — Tomás Stonehouse` : "Tomás Stonehouse — Senior Product Designer"}</title>
+    <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta property="og:title" content={title ?? "Tomás Stonehouse"} />
+    <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     {noindex ? <meta name="robots" content="noindex" /> : null}
